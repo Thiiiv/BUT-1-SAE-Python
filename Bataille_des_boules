@@ -1,1 +1,34 @@
+from upemtk import *
+from random import randint
 
+if __name__ == '__main__':
+    cree_fenetre(500, 500)
+
+    lst_col = ["blue","red","green","yellow"]
+    noir = 'black'
+
+    hazard = randint(1, 2)
+    if hazard == 1:
+        joueur1 = lst_col[0]
+        joueur2 = lst_col[1]
+    if hazard == 2:
+        joueur1 = lst_col[2]
+        joueur2 = lst_col[3]
+
+    tour = 5
+    rayon = 50
+    distance = 0
+    for i in range(tour):
+        x1, y1, z1 = attente_clic()
+        cercle(x1, y1, rayon, noir, joueur1, 1, 'j1')
+
+        x2, y2, z2 = attente_clic()
+        #distance = 
+        if distance > rayon * 2:
+            cercle(x2, y2, rayon, noir, joueur2, 1, 'j2')
+        mise_a_jour()
+
+
+    attente_clic()  
+    ferme_fenetre()
+    
