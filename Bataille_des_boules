@@ -1,5 +1,6 @@
 from upemtk import *
 from random import randint
+from time import *
 
 if __name__ == '__main__':
     cree_fenetre(500, 500)
@@ -17,18 +18,53 @@ if __name__ == '__main__':
 
     tour = 5
     rayon = 50
-    distance = 0
+    distance_hori = []
+    distance_verti = []
+    lst_cordonnees_x = []
+    lst_cordonnees_y = []
+    temp = 0
+    compteur = 0
     for i in range(tour):
+        temp = 0
         x1, y1, z1 = attente_clic()
         cercle(x1, y1, rayon, noir, joueur1, 1, 'j1')
-
         x2, y2, z2 = attente_clic()
-        #distance = 
-        if distance > rayon * 2:
+        lst_cordonnees_x.append(x1)
+        lst_cordonnees_y.append(y1)
+        distance_verti = []
+        distance_hori = []
+        print()
+        print("x2 :", x2, "| y2 :", y2)
+        for k in range(compteur+1) :
+            if lst_cordonnees_x[k] >= x2 :
+                distance_hori.append(lst_cordonnees_x[k] - x2)
+                print("distance_hori(1) :", distance_hori)
+            if x2 > lst_cordonnees_x[k] :
+                distance_hori.append(x2 - lst_cordonnees_x[k])
+                print("distance_hori(2) :", distance_hori)
+            if lst_cordonnees_y[k] >= y2 :
+                distance_verti.append(lst_cordonnees_y[k] - y2)
+                print("distance_verti(1) :", distance_verti)
+            if y2 > lst_cordonnees_y[k] :
+                distance_verti.append(y2 - lst_cordonnees_y[k])
+                print("distance_verti(2) :", distance_verti)
+        for j in range(len(distance_hori)) :
+            if distance_hori[j] >= 100 and distance_verti[j] >= 100 :
+                temp += 1
+            if distance_verti[j] < 100 and distance_hori[j] >= 100 :
+                temp += 1
+            if distance_hori[j] < 100 and distance_verti[j] >= 100 :
+                temp += 1
+            if distance_verti[j] < 100 and distance_hori[j] < 100 :
+                temp = 0
+                break
+        if temp != 0 :
             cercle(x2, y2, rayon, noir, joueur2, 1, 'j2')
+        compteur += 1
+        print("distance_verti :", distance_verti, "| distance_hori :", distance_hori, "| compteur :", compteur, "| temp :", temp)
+        print("lst_cordonnees_x", lst_cordonnees_x, "| lst_cordonnees_y :", lst_cordonnees_y)
         mise_a_jour()
-
-
-    attente_clic()  
-    ferme_fenetre()
     
+    if type_evenement(donne_evenement()) in ['ClicDroit', 'ClicGauche', 'Touche'] :
+        time.sleep(200)
+        ferme_fenetre()
