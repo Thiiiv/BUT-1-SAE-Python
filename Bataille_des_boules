@@ -15,56 +15,76 @@ if __name__ == '__main__':
     if hazard == 2:
         joueur1 = lst_col[2]
         joueur2 = lst_col[3]
-
     tour = 5
     rayon = 50
-    distance_hori = []
-    distance_verti = []
-    lst_cordonnees_x = []
-    lst_cordonnees_y = []
+    distance_hori1 = []
+    distance_verti1 = []
+    distance_hori2 = []
+    distance_verti2 = []
+    lst_cordonnees_x1 = []
+    lst_cordonnees_x2 = []
+    lst_cordonnees_y1 = []
+    lst_cordonnees_y2 = []
     temp = 0
     compteur = 0
     for i in range(tour):
+        distance_verti1 = []
+        distance_verti2 = []
+        distance_hori1 = []
+        distance_hori2 = []
         temp = 0
         x1, y1, z1 = attente_clic()
-        cercle(x1, y1, rayon, noir, joueur1, 1, 'j1')
+        lst_cordonnees_x1.append(x1)
+        lst_cordonnees_y1.append(y1)
+        if i == 0 :
+            cercle(x1, y1, rayon, noir, joueur1, 1, 'j1')
+        else :
+            for j in range(compteur) :
+                if x1 >= lst_cordonnees_x2[j] :
+                    distance_hori2.append(x1 - lst_cordonnees_x2[j])
+                if lst_cordonnees_x2[j] > x1 :
+                    distance_hori2.append(lst_cordonnees_x2[j] - x1)
+                if y1 >= lst_cordonnees_y2[j] :
+                    distance_verti2.append(y1 - lst_cordonnees_y2[j])
+                if lst_cordonnees_y2[j] > y1 :
+                    distance_verti2.append(lst_cordonnees_y2[j] - y1)
+            for k in range(len(distance_hori2)) :
+                temp = 1
+                if distance_verti2[k] < 100 and distance_hori2[k] < 100 :
+                    temp = 0
+                    break
+            if temp != 0 :
+                cercle(x1, y1, rayon, noir, joueur1, 1, 'j1')
         x2, y2, z2 = attente_clic()
-        lst_cordonnees_x.append(x1)
-        lst_cordonnees_y.append(y1)
-        distance_verti = []
-        distance_hori = []
+        lst_cordonnees_x2.append(x2)
+        lst_cordonnees_y2.append(y2)
         print()
         print("x2 :", x2, "| y2 :", y2)
         for k in range(compteur+1) :
-            if lst_cordonnees_x[k] >= x2 :
-                distance_hori.append(lst_cordonnees_x[k] - x2)
-                print("distance_hori(1) :", distance_hori)
-            if x2 > lst_cordonnees_x[k] :
-                distance_hori.append(x2 - lst_cordonnees_x[k])
-                print("distance_hori(2) :", distance_hori)
-            if lst_cordonnees_y[k] >= y2 :
-                distance_verti.append(lst_cordonnees_y[k] - y2)
-                print("distance_verti(1) :", distance_verti)
-            if y2 > lst_cordonnees_y[k] :
-                distance_verti.append(y2 - lst_cordonnees_y[k])
-                print("distance_verti(2) :", distance_verti)
-        for j in range(len(distance_hori)) :
-            if distance_hori[j] >= 100 and distance_verti[j] >= 100 :
-                temp += 1
-            if distance_verti[j] < 100 and distance_hori[j] >= 100 :
-                temp += 1
-            if distance_hori[j] < 100 and distance_verti[j] >= 100 :
-                temp += 1
-            if distance_verti[j] < 100 and distance_hori[j] < 100 :
+            if lst_cordonnees_x1[k] >= x2 :
+                distance_hori1.append(lst_cordonnees_x1[k] - x2)
+                print("distance_hori1(1) :", distance_hori1)
+            if x2 > lst_cordonnees_x1[k] :
+                distance_hori1.append(x2 - lst_cordonnees_x1[k])
+                print("distance_hori1(2) :", distance_hori1)
+            if lst_cordonnees_y1[k] >= y2 :
+                distance_verti1.append(lst_cordonnees_y1[k] - y2)
+                print("distance_verti1(1) :", distance_verti1)
+            if y2 > lst_cordonnees_y1[k] :
+                distance_verti1.append(y2 - lst_cordonnees_y1[k])
+                print("distance_verti1(2) :", distance_verti1)
+        for j in range(len(distance_hori1)) :
+            temp = 1
+            if distance_verti1[j] < 100 and distance_hori1[j] < 100 :
                 temp = 0
                 break
         if temp != 0 :
             cercle(x2, y2, rayon, noir, joueur2, 1, 'j2')
         compteur += 1
-        print("distance_verti :", distance_verti, "| distance_hori :", distance_hori, "| compteur :", compteur, "| temp :", temp)
-        print("lst_cordonnees_x", lst_cordonnees_x, "| lst_cordonnees_y :", lst_cordonnees_y)
+        print("distance_verti1 :", distance_verti1, "| distance_hori1 :", distance_hori1, "| compteur :", compteur, "| temp :", temp)
+        print("lst_cordonnees_x1", lst_cordonnees_x1, "| lst_cordonnees_y1 :", lst_cordonnees_y1)
         mise_a_jour()
     
-    if type_evenement(donne_evenement()) in ['ClicDroit', 'ClicGauche', 'Touche'] :
-        time.sleep(200)
-        ferme_fenetre()
+    attente_clic()
+    sleep(3)
+    ferme_fenetre()
