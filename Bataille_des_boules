@@ -51,6 +51,8 @@ if __name__ == '__main__':
             for k in range(len(distance_hori2)) :
                 temp = 1
                 if distance_verti2[k] < 100 and distance_hori2[k] < 100 :
+                    distance_hori2.pop(k)
+                    distance_verti2.pop(k)
                     temp = 0
                     break
             if temp != 0 :
@@ -76,6 +78,8 @@ if __name__ == '__main__':
         for j in range(len(distance_hori1)) :
             temp = 1
             if distance_verti1[j] < 100 and distance_hori1[j] < 100 :
+                distance_hori1.pop(j)
+                distance_verti1.pop(j)
                 temp = 0
                 break
         if temp != 0 :
