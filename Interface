@@ -1,0 +1,53 @@
+from upemtk import *
+from time import sleep
+from random import randint
+
+def menu_textuel(x1, y1, x2, y2, chaine='') :
+    """
+    Affiche le texte centré par rapport au rectangle.
+
+    :param float x1: ax du rectange
+    :param float x2: bx du rectange
+    :param float y1: ay du rectange
+    :param float y2: by du rectange
+    :param str chaine: chaîne de caractère
+
+    """
+    lettres = 0
+    taille = 24
+    coeff = 6
+    if width != 400 :
+        coeff = coeff*1.5*(width/400)
+
+    for lettre in chaine :
+        lettres += 1
+    milieu_y = y2-y1-taille/2
+    milieu_x = x2 - x1
+    ancrage = x1
+    if milieu_x - lettres*24 != 0 :
+        ancrage = x1 + coeff*(taille/lettres)
+    texte(ancrage, milieu_y, chaine, 'black', 'nw', 'Purisa', taille)
+
+
+
+def start() :
+    """
+    Affiche le menu de départ pour lancer le jeu ou le quitter lorsque celui-ci est terminé
+    """
+    largeurFenetre = 800
+    hauteurFenetre = 800
+    cree_fenetre(largeurFenetre, hauteurFenetre)
+    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
+    y_superieur = int(hauteurFenetre/4)
+    y_inferieur = int(3*(hauteurFenetre/4))
+    x_milieu = int(largeurFenetre/2)
+    x_gauche = int(largeurFenetre/10)
+    rectangle(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'grey', 'grey')
+    rectangle(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'grey', 'grey')
+    menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Jouer')
+    menu_textuel(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'Quitter')
+
+if __name__ == '__main__':
+    start()
+    attente_clic()
+    ferme_fenetre()
