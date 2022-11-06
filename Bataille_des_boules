@@ -26,8 +26,8 @@ def intersection(x, y, lst_x2, lst_y2, joueur, compteur) :
     for k in range(len(distance_hori)) :
         temp = 1
         if distance_verti[k] < 100 and distance_hori[k] < 100 :
-            distance_hori.pop(k)
-            distance_verti.pop(k)
+            lst_cordonnees_x.pop(k)
+            lst_cordonnees_y.pop(k)
             temp = 0
             break
     if temp != 0 :
