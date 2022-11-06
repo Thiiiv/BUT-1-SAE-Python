@@ -6,9 +6,11 @@ from time import *
 
 #-----Fonctions-----
 
+'''Les fonctions j1 et j2 sont des fonctions pour pouvoir attribuer des couleurs froides aléatoirement au joueur1 et des couleurs chaudes aléatoirement au joueur2.'''
+
 def j1():
     lst_col = ["blue","green","purple"]
-    hazard = randint(0, 2)
+    hazard = randint(0, 2) # Randomizer pour les couleurs
     joueur1 = "black"
     if hazard == 0:
         joueur1 = lst_col[0]
@@ -62,6 +64,8 @@ def intersection(x, y, lst_x2, lst_y2, joueur, compteur) :
         cercle(x, y, rayon, "black", joueur, 1, tag)
     return distance_hori, distance_verti
 
+'''La fonction Jeu est le squelette de notre code pour le Jeu des Boules elle réutilise les fonctions précédentes pour pouvoir proposé un jeu fonctionnelle.'''
+
 def Jeu():
     cree_fenetre(500, 500)
     tour = 5
@@ -92,19 +96,20 @@ def Jeu():
             cercle(x1, y1, rayon, "black", joueur1, 1, 'j1')
         else :
             intersection(x1, y1, lst_cordonnees_x2, lst_cordonnees_y2, joueur1, compteur)
-
         x2, y2, z2 = attente_clic()
         lst_cordonnees_x2.append(x2)
         lst_cordonnees_y2.append(y2)
 
-        print()
-        print("x2 :", x2, "| y2 :", y2)
+        # Test
+        # print()
+        # print("x2 :", x2, "| y2 :", y2)
+
         intersection(x2, y2, lst_cordonnees_x1, lst_cordonnees_y1, joueur2, compteur)
         compteur += 1
 
         # Test
-        print("distance_verti1 :", distance_verti1, "| distance_hori1 :", distance_hori1, "| distance_verti2 :", distance_verti2, "| distance_hori2 :", distance_hori2, "| compteur :", compteur, "| temp :", temp)
-        print("lst_cordonnees_x1", lst_cordonnees_x1, "| lst_cordonnees_y1 :", lst_cordonnees_y1)
+        # print("distance_verti1 :", distance_verti1, "| distance_hori1 :", distance_hori1, "| distance_verti2 :", distance_verti2, "| distance_hori2 :", distance_hori2, "| compteur :", compteur, "| temp :", temp)
+        # print("lst_cordonnees_x1", lst_cordonnees_x1, "| lst_cordonnees_y1 :", lst_cordonnees_y1)
         
         mise_a_jour()    
     attente_clic()
@@ -114,7 +119,7 @@ def Jeu():
 #-----main-----
 
 if __name__ == '__main__':
-    joueur1 = j1()
+    joueur1 = j1() # Variables qu'on a besoin de généralisé dans le code
     joueur2 = j2()
     rayon = 50
     Jeu()
