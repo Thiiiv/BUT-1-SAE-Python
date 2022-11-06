@@ -2,6 +2,38 @@ from upemtk import *
 from random import randint
 from time import *
 
+def intersection(x, y, lst_x2, lst_y2, joueur, compteur) :
+    temp = 0
+    lst_cordonnees_x = lst_x2
+    lst_cordonnees_y = lst_y2
+    distance_hori = []
+    distance_verti = []
+    tag = ''
+    if joueur == joueur1 :
+        tag = 'j1'
+    else :
+        tag = 'j2'
+        
+    for j in range(compteur) :
+        if x >= lst_cordonnees_x[j] :
+            distance_hori.append(x - lst_cordonnees_x[j])
+        if lst_cordonnees_x[j] > x :
+            distance_hori.append(lst_cordonnees_x[j] - x)
+        if y >= lst_cordonnees_y[j] :
+            distance_verti.append(y - lst_cordonnees_y[j])
+        if lst_cordonnees_y[j] > y :
+            distance_verti.append(lst_cordonnees_y[j] - y)
+    for k in range(len(distance_hori)) :
+        temp = 1
+        if distance_verti[k] < 100 and distance_hori[k] < 100 :
+            distance_hori.pop(k)
+            distance_verti.pop(k)
+            temp = 0
+            break
+    if temp != 0 :
+        cercle(x, y, rayon, noir, joueur, 1, tag)
+    return distance_hori, distance_verti
+
 if __name__ == '__main__':
     cree_fenetre(500, 500)
 
@@ -39,7 +71,8 @@ if __name__ == '__main__':
         if i == 0 :
             cercle(x1, y1, rayon, noir, joueur1, 1, 'j1')
         else :
-            for j in range(compteur) :
+            #intersection(x1, y1, lst_cordonnees_x2, lst_cordonnees_y2, joueur1, compteur)
+            for j in range(len(lst_cordonnees_x2)) :
                 if x1 >= lst_cordonnees_x2[j] :
                     distance_hori2.append(x1 - lst_cordonnees_x2[j])
                 if lst_cordonnees_x2[j] > x1 :
@@ -51,8 +84,8 @@ if __name__ == '__main__':
             for k in range(len(distance_hori2)) :
                 temp = 1
                 if distance_verti2[k] < 100 and distance_hori2[k] < 100 :
-                    distance_hori2.pop(k)
-                    distance_verti2.pop(k)
+                    lst_cordonnees_x1.pop(-1)
+                    lst_cordonnees_x1.pop(-1)
                     temp = 0
                     break
             if temp != 0 :
@@ -62,33 +95,39 @@ if __name__ == '__main__':
         lst_cordonnees_y2.append(y2)
         print()
         print("x2 :", x2, "| y2 :", y2)
-        for k in range(compteur+1) :
+        #intersection(x2, y2, lst_cordonnees_x1, lst_cordonnees_y1, joueur2, compteur)
+        for k in range(len(lst_cordonnees_x1)) :
             if lst_cordonnees_x1[k] >= x2 :
                 distance_hori1.append(lst_cordonnees_x1[k] - x2)
-                print("distance_hori1(1) :", distance_hori1)
+                # Test
+                #print("distance_hori1(1) :", distance_hori1)
             if x2 > lst_cordonnees_x1[k] :
                 distance_hori1.append(x2 - lst_cordonnees_x1[k])
-                print("distance_hori1(2) :", distance_hori1)
+                # Test
+                #print("distance_hori1(2) :", distance_hori1)
             if lst_cordonnees_y1[k] >= y2 :
                 distance_verti1.append(lst_cordonnees_y1[k] - y2)
-                print("distance_verti1(1) :", distance_verti1)
+                # Test
+                #print("distance_verti1(1) :", distance_verti1)
             if y2 > lst_cordonnees_y1[k] :
                 distance_verti1.append(y2 - lst_cordonnees_y1[k])
-                print("distance_verti1(2) :", distance_verti1)
+                # Test
+                #print("distance_verti1(2) :", distance_verti1)
         for j in range(len(distance_hori1)) :
             temp = 1
             if distance_verti1[j] < 100 and distance_hori1[j] < 100 :
-                distance_hori1.pop(j)
-                distance_verti1.pop(j)
+                lst_cordonnees_x2.pop(-1)
+                lst_cordonnees_y2.pop(-1)
                 temp = 0
                 break
         if temp != 0 :
             cercle(x2, y2, rayon, noir, joueur2, 1, 'j2')
         compteur += 1
-        print("distance_verti1 :", distance_verti1, "| distance_hori1 :", distance_hori1, "| compteur :", compteur, "| temp :", temp)
+        # Test
+        print("distance_verti1 :", distance_verti1, "| distance_hori1 :", distance_hori1, "| distance_verti2 :", distance_verti2, "| distance_hori2 :", distance_hori2, "| compteur :", compteur, "| temp :", temp)
         print("lst_cordonnees_x1", lst_cordonnees_x1, "| lst_cordonnees_y1 :", lst_cordonnees_y1)
         mise_a_jour()
     
     attente_clic()
-    sleep(3)
+    sleep(1)
     ferme_fenetre()
