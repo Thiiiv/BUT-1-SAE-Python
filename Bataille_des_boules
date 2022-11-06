@@ -2,6 +2,30 @@ from upemtk import *
 from random import randint
 from time import *
 
+def j1():
+    lst_col = ["blue","green","purple"]
+    hazard = randint(0, 2)
+    joueur1 = "black"
+    if hazard == 0:
+        joueur1 = lst_col[0]
+    if hazard == 1:
+        joueur1 = lst_col[1]
+    if hazard == 2:
+        joueur1 = lst_col[2]
+    return joueur1
+
+def j2():
+    lst_col = ["red","yellow","orange"]
+    hazard = randint(0, 2)
+    joueur2 = "black"
+    if hazard == 0:
+        joueur2 = lst_col[0]
+    if hazard == 1:
+        joueur2 = lst_col[1]
+    if hazard == 2:
+        joueur2 = lst_col[2]
+    return joueur2
+
 def intersection(x, y, lst_x2, lst_y2, joueur, compteur) :
     temp = 0
     lst_cordonnees_x = lst_x2
@@ -34,19 +58,13 @@ def intersection(x, y, lst_x2, lst_y2, joueur, compteur) :
         cercle(x, y, rayon, noir, joueur, 1, tag)
     return distance_hori, distance_verti
 
-if __name__ == '__main__':
+def Jeu():
     cree_fenetre(500, 500)
 
-    lst_col = ["blue","red","green","yellow"]
+    joueur1 = j1()
+    joueur2 = j2()
     noir = 'black'
 
-    hazard = randint(1, 2)
-    if hazard == 1:
-        joueur1 = lst_col[0]
-        joueur2 = lst_col[1]
-    if hazard == 2:
-        joueur1 = lst_col[2]
-        joueur2 = lst_col[3]
     tour = 5
     rayon = 50
     distance_hori1 = []
@@ -131,3 +149,6 @@ if __name__ == '__main__':
     attente_clic()
     sleep(1)
     ferme_fenetre()
+
+if __name__ == '__main__':
+    Jeu()
