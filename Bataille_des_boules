@@ -3,7 +3,7 @@
 from upemtk import *
 from random import randint
 from time import *
-from math import sqrt, atan2
+from math import sqrt, atan2, acos
 from decimal import getcontext
 
 #-----Fonctions-----
@@ -81,6 +81,19 @@ def j2():
     if hazard == 2:
         joueur2 = lst_col[2]
     return joueur2
+
+def Victoire(distance):
+    SommeAireJ1 = 0
+    SommeAireJ2 = 0
+    res = rayon**2 * pi
+    res *= tour
+    intersection()
+    R = rayon 
+    r = rayon 
+    d = distance
+    d1 = R**2 - r**2 + d**2
+    d2 = d - d1 
+    AireIntersection = r**2 * acos(d1/r) - d1 * sqrt(r**2 - d1**2) + R**2 * acos(d2/R) - d2 * sqrt(R**2 - d2**2)
 
 '''La fonction Jeu est le squelette de notre code pour le Jeu des Boules elle réutilise les fonctions précédentes pour pouvoir proposé un jeu fonctionnelle.'''
 
