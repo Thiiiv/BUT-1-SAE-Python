@@ -3,7 +3,7 @@
 from upemtk import *
 from random import randint
 from time import *
-from math import sqrt, atan2, acos
+from math import sqrt, atan2, acos, pi
 from decimal import getcontext
 
 #-----Fonctions-----
@@ -37,13 +37,13 @@ def calc_distance(x, y, lst_x, lst_y, joueur) :
             temp.append(lst_y[i] - y)
     for j in range(0, len(temp), 2) :
         if j+1 < len(temp) :
-            distance.append(sqrt(temp[j]**2+temp[j+1]**2))
+            distance.append(sqrt(temp[j]**2 + temp[j+1]**2))
     return distance
 
 def intersection(distance, rayon):
     temp = 1
     for i in range(len(distance)):
-        if distance[i] < rayon*2:
+        if distance[i] < rayon * 2:
             temp = 0
             return True
     return False
