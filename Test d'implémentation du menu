@@ -25,7 +25,7 @@ def etiquette(joueur, tour) :
         return tag+str(tour), tag1+str(tour+1)  
 
 
-'''Cette fonction calcule la distance entre 2 centre de cerlces'''
+'''Cette fonction calcule la distance entre 2 centre de cercles'''
 
 
 def calc_distance(x, y, lst_x, lst_y, joueur) :
@@ -52,14 +52,17 @@ def calc_distance(x, y, lst_x, lst_y, joueur) :
     return distance
 
 
-def intersection(distance, rayon):
-    temp = 1
-    for i in range(len(distance)):
-        if distance[i] < rayon * 2:
-            temp = 0
-            return True
-    return False
+def intersection(x, y, lst_x, lst_y, joueur, rayon) :
+    min = 0
+    if joueur == joueur1 :
+        min = 1
+    else :
+        min = 0
 
+    for i in range(min, len(lst_x), 2) :
+        if sqrt((x-lst_x[i])**2+(y-lst_y[i])**2)< rayon*2:
+            return i
+    return False
 
 def division_boule(x, y, x_proche, y_proche, joueur, tour, tag, lst_rayon) :
     dy = y-y_proche
@@ -109,33 +112,33 @@ def j2():
     return joueur2
 
 
-def Victoire():
-    SommeAireJ1 = 1
-    SommeAireJ2 = 0
-    '''
-    R = rayon 
-    r = rayon 
+def calculer_aire(lst_x,lst_y,lst_rayon, joueur):
+    SommeAire = 0
+    if joueur == joueur1 :
+        min = 1
+    else :
+        min = 0
+    for i in range(min, len(lst_x), 2) :
+        SommeAire += pi * lst_rayon[i]**2
+        if intersection(lst_x[i], lst_y[i], lst_x, lst_y, joueur, rayon) != False:
+            j = intersection(lst_x[i], lst_y[i], lst_x, lst_y, joueur, rayon)
+            x = lst_x[j]
+            y = lst_y[j]
+            d = sqrt((x-lst_x[j])**2+(y-lst_y[j])**2)
+            #AireIntersection = lst_rayon[i]**2 * acos((d**2 + lst_rayon[i]**2 - lst_rayon[j]**2) / (2 * d * lst_rayon[i])) + lst_rayon[j]**2 * acos((d**2 + lst_rayon[j]**2 - lst_rayon[i]**2) / (2 * d * lst_rayon[j])) -1/2 * sqrt((-d + lst_rayon[i] + lst_rayon[j]) * (d + lst_rayon[i] - lst_rayon[j]) * (d - lst_rayon[i] + lst_rayon[j]) * (d + lst_rayon[i] + lst_rayon[j])) 
+            AireIntersection = r**2 * acos((d**2 + r**2 - r**2) / (2 * d * r)) + r**2 * acos((d**2 + r**2 - r**2) / (2 * d * r)) -1/2 * sqrt((-d + r + r) * (d + r - r) * (d - r + r) * (d + r + r)) 
+            SommeAire -= AireIntersection
 
-    aireJ1 = r**2 * pi
+    return SommeAire
 
-    d = distance
 
-    if intersection(distance, rayon) == True:
-        AireIntersection = r**2 * acos((d**2 + r**2 - R**2) / (2 * d * r)) + R**2 * acos((d**2 + R**2 - r**2) / (2 * d * R)) -1/2 * sqrt((-d + r + R) * (d + r - R) * (d - r + R) * (d + r + R))
-        aireJ1 = aireJ1 * 2 - AireIntersection
-    
-    aireJ1 = tour
-    '''
-    if SommeAireJ1 > SommeAireJ2:
-        return True #Joueur1 a gagné
-    return False #Joueur2 a gagné
 
 
 def menu_textuel(x1, y1, x2, y2, chaine='') :
     """
     Affiche le texte centré par rapport au rectangle.
 
-    :param float x1: ax du rectange
+    :param float x1: ax du rectange 
     :param float x2: bx du rectange
     :param float y1: ay du rectange
     :param float y2: by du rectange
@@ -188,7 +191,7 @@ def start() :
     return
     
 
-def fin():
+def fin(n):
     largeurFenetre = 800
     hauteurFenetre = 800
     cree_fenetre(largeurFenetre, hauteurFenetre)
@@ -199,10 +202,12 @@ def fin():
     y_inferieur = 600
     rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey')
     rectangle(x_droite+x_gauche, y_superieur, (x_droite*2), y_inferieur, 'grey', 'grey')
-
-    if Victoire() == True:
+    
+    if n == 0:
+        menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Egalité')
+    if n == 1:
         menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Joueur1 a gagné')
-    else:
+    if n == 2:
         menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Joueur2 a gagné')
 
     menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Merci d\'avoir joué !')
@@ -233,13 +238,12 @@ def Jeu():
         if i == 0 :
             cercle(x1, y1, rayon, 'black', joueur1, 1, tag[-1])
         else :
-            if intersection(distance1, rayon) == False :
+            if intersection(x1, y1, lst_x, lst_y, joueur1, rayon) == False :
                 cercle(x1, y1, rayon, 'black', joueur1, 1, tag)
             else :
                 division_boule(x1, y1, lst_x, lst_y, distance1, joueur2, lst_rayon)
                 lst_x[-1] = 1000**1000
                 lst_y[-1] = 1000**1000
-                lst_rayon.pop(-1)
         x2, y2, z2 = attente_clic()
         lst_x.append(x2)
         lst_y.append(y2)
@@ -248,14 +252,19 @@ def Jeu():
         distance2 = calc_distance(x2, y2, lst_x, lst_y, joueur2)
         print("distance2 :", distance2)
         print()
-        if intersection(distance2, rayon) == False :
+        if intersection(x2, y2, lst_x, lst_y, joueur2, rayon) == False :
             cercle(x2, y2, rayon, 'black', joueur2, 1, tag[-1])
         else :
             lst_x[-1] = 1000**1000
             lst_y[-1] = 1000**1000
-            lst_rayon.pop(-1)
         mise_a_jour()
     
+    if calculer_aire(lst_x,lst_y,lst_rayon,joueur1) == calculer_aire(lst_x,lst_y,lst_rayon,joueur2):
+        fin(0)
+    if calculer_aire(lst_x,lst_y,lst_rayon,joueur1) > calculer_aire(lst_x,lst_y,lst_rayon,joueur2):
+        fin(1) #Joueur1 a gagné
+    fin(2) #Joueur2 a gagné
+
     attente_clic()
     ferme_fenetre()
 
@@ -268,4 +277,5 @@ if __name__ == '__main__':
     joueur2 = j2()
     tour = 5
     rayon = 50
+    r = rayon
     start()
