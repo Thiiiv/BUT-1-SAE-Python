@@ -1,0 +1,251 @@
+#-----Imports-----
+
+
+from upemtk import *
+from random import randint
+from time import *
+from math import sqrt, atan2, acos, pi
+from decimal import getcontext
+
+
+#-----Fonctions-----
+
+
+def etiquette(joueur, tour) :
+    tag = ''
+    if joueur == joueur1 :
+        tag = 'j1_'
+        return tag + str(tour)
+    elif joueur == joueur2 :
+        tag = 'j2_'
+        return tag + str(tour)
+    else :
+        tag = 'div_'
+        tag1 = 'div_'
+        return tag+str(tour), tag1+str(tour+1)  
+
+
+'''Cette fonction calcule la distance entre 2 centre de cerlces'''
+
+
+def calc_distance(x, y, lst_x, lst_y, joueur) :
+    distance = []
+    temp = []
+    min = 0
+    if joueur == joueur1 :
+        min = 1
+    else :
+        min = 0
+        
+    for i in range(min, len(lst_x), 2) :
+        if x >= lst_x[i] and lst_x[i] != 1000**1000 :
+            temp.append(x - lst_x[i])
+        if x < lst_x[i] and lst_x[i] != 1000**1000 :
+            temp.append(lst_x[i] - x)
+        if y >= lst_y[i] and lst_y[i] != 1000**1000 :
+            temp.append(y - lst_y[i])
+        if y < lst_y[i] and lst_y[i] != 1000**1000 :
+            temp.append(lst_y[i] - y)
+    for j in range(0, len(temp), 2) :
+        if j+1 < len(temp) :
+            distance.append(sqrt(temp[j]**2 + temp[j+1]**2))
+    return distance
+
+
+def intersection(distance, rayon):
+    temp = 1
+    for i in range(len(distance)):
+        if distance[i] < rayon * 2:
+            temp = 0
+            return True
+    return False
+
+
+def divison_boule(x, y, lst_x, lst_y, distance, joueur) :
+    for i in range(len(distance)) :
+        if distance[i] < rayon :
+            cercle(x, y, 50-distance[i], 'black', joueur, 1, 'test')
+    return
+
+
+'''Les fonctions j1 et j2 sont des fonctions pour pouvoir attribuer des couleurs froides aléatoirement au joueur1 et des couleurs chaudes aléatoirement au joueur2.'''
+
+
+def j1():
+    lst_col = ["blue", "green", "purple"]
+    hazard = randint(0, 2) # Randomizer pour les couleurs
+    joueur1 = "black"
+    if hazard == 0:
+        joueur1 = lst_col[0]
+    if hazard == 1:
+        joueur1 = lst_col[1]
+    if hazard == 2:
+        joueur1 = lst_col[2]
+    return joueur1
+
+
+def j2():
+    lst_col = ["red", "yellow", "orange"]
+    hazard = randint(0, 2)
+    joueur2 = "black"
+    if hazard == 0:
+        joueur2 = lst_col[0]
+    if hazard == 1:
+        joueur2 = lst_col[1]
+    if hazard == 2:
+        joueur2 = lst_col[2]
+    return joueur2
+
+
+def Victoire(distance):
+    SommeAireJ1 = 1
+    SommeAireJ2 = 0
+    '''
+    R = rayon 
+    r = rayon 
+
+    aireJ1 = r**2 * pi
+
+    d = distance
+
+    if intersection(distance, rayon) == True:
+        AireIntersection = r**2 * acos((d**2 + r**2 - R**2) / (2 * d * r)) + R**2 * acos((d**2 + R**2 - r**2) / (2 * d * R)) -1/2 * sqrt((-d + r + R) * (d + r - R) * (d - r + R) * (d + r + R))
+        aireJ1 = aireJ1 * 2 - AireIntersection
+    
+    aireJ1 = tour
+    '''
+    if SommeAireJ1 > SommeAireJ2:
+        return True #Joueur1 a gagné
+    return False #Joueur2 a gagné
+
+
+def menu_textuel(x1, y1, x2, y2, chaine='') :
+    """
+    Affiche le texte centré par rapport au rectangle.
+
+    :param float x1: ax du rectange
+    :param float x2: bx du rectange
+    :param float y1: ay du rectange
+    :param float y2: by du rectange
+    :param str chaine: chaîne de caractère
+
+    """
+    lettres = 0
+    taille = 24
+    coeff = 6
+    if width != 400 :
+        coeff = coeff*1.5*(width/400)
+
+    for lettre in chaine :
+        lettres += 1
+    milieu_y = y2-y1-taille/2
+    milieu_x = x2 - x1
+    ancrage = x1
+    if milieu_x - lettres*24 != 0 :
+        ancrage = x1 + coeff*(taille/lettres)
+    texte(ancrage, milieu_y, chaine, 'black', 'nw', 'Purisa', taille)
+
+
+def start() :
+    """
+    Affiche le menu de départ pour lancer le jeu ou le quitter lorsque celui-ci est terminé
+    """
+    largeurFenetre = 800
+    hauteurFenetre = 800
+    cree_fenetre(largeurFenetre, hauteurFenetre)
+    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
+    y_superieur = int(hauteurFenetre/4)
+    y_inferieur = int(3*(hauteurFenetre/4))
+    x_milieu = int(largeurFenetre/2)
+    x_gauche = int(largeurFenetre/10)
+    rectangle(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'grey', 'grey')
+    rectangle(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'grey', 'grey')
+
+    if Victoire() == True:
+        menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Joueur1 a gagné')
+    else:
+        menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Joueur2 a gagné')
+    
+    menu_textuel(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'Merci d\'avoir joué !')
+    attente_clic()
+    ferme_fenetre()
+    return True
+    
+
+def fin():
+    largeurFenetre = 800
+    hauteurFenetre = 800
+    cree_fenetre(largeurFenetre, hauteurFenetre)
+    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
+    y_superieur = int(hauteurFenetre/4)
+    y_inferieur = int(3*(hauteurFenetre/4))
+    x_milieu = int(largeurFenetre/2)
+    x_gauche = int(largeurFenetre/10)
+    rectangle(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'grey', 'grey')
+    rectangle(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'grey', 'grey')
+    menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Rejouer')
+    menu_textuel(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'Quitter')
+    attente_clic()
+    ferme_fenetre()
+
+
+'''La fonction Jeu est le squelette de notre code pour le Jeu des Boules elle réutilise les fonctions précédentes pour pouvoir proposé un jeu fonctionnelle.'''
+
+
+def Jeu():
+    cree_fenetre(800, 800)
+    lst_x = []
+    lst_y = []
+    distance1 = []
+    distance2 = []
+    tag = []
+    
+    for i in range(tour) :
+        x1, y1, z1 = attente_clic()
+        lst_x.append(x1)
+        lst_y.append(y1)
+        tag.append(etiquette(joueur1, i))
+        distance1 = calc_distance(x1, y1, lst_x, lst_y, joueur1)
+        print("distance1 :", distance1)
+        print()
+        if i == 0 :
+            cercle(x1, y1, rayon, 'black', joueur1, 1, tag[-1])
+        else :
+            if intersection(distance1, rayon) == False :
+                cercle(x1, y1, rayon, 'black', joueur1, 1, tag)
+            else :
+                divison_boule(x1, y1, lst_x, lst_y, distance1, joueur2)
+                lst_x[-1] = 1000**1000
+                lst_y[-1] = 1000**1000
+        x2, y2, z2 = attente_clic()
+        lst_x.append(x2)
+        lst_y.append(y2)
+        tag.append(etiquette(joueur2, i))
+        distance2 = calc_distance(x2, y2, lst_x, lst_y, joueur2)
+        print("distance2 :", distance2)
+        print()
+        if intersection(distance2, rayon) == False :
+            cercle(x2, y2, rayon, 'black', joueur2, 1, tag[-1])
+        else :
+            lst_x[-1] = 1000**1000
+            lst_y[-1] = 1000**1000
+        mise_a_jour()
+    
+    attente_clic()
+    ferme_fenetre()
+
+
+#-----main-----
+
+
+if __name__ == '__main__':
+    joueur1 = j1() # Variables qu'on a besoin de généralisé dans le code
+    joueur2 = j2()
+    tour = 5
+    rayon = 50
+    width = 500
+    start()
+    if start == True:
+        Jeu()
+    else:
+        fin()
