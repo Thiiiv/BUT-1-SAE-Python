@@ -236,8 +236,8 @@ def Jeu():
         distance1 = calc_distance(x1, y1, lst_x, lst_y, joueur1)
         print("distance1 :", distance1)
         print()
-        menu_textuel(75, 15, 75, 15, 'Tour: J1', 1)
-        efface('1')
+        menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j1')
+        mise_a_jour()
         if i == 0 :
             cercle(x1, y1, rayon, 'black', joueur1, 1, tag[-1])
         else :
@@ -247,9 +247,12 @@ def Jeu():
                 division_boule(x1, y1, lst_x, lst_y, distance1, joueur2, lst_rayon)
                 lst_x[-1] = 1000**1000
                 lst_y[-1] = 1000**1000
+        sleep(0.25)
+        efface('j1')
+        mise_a_jour()
         x2, y2, z2 = attente_clic()
-        menu_textuel(75, 15, 75, 15, 'Tour: J2', 2)
-        efface('2')
+        menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j2')
+        mise_a_jour()
         lst_x.append(x2)
         lst_y.append(y2)
         lst_rayon.append(rayon)
@@ -262,6 +265,8 @@ def Jeu():
         else :
             lst_x[-1] = 1000**1000
             lst_y[-1] = 1000**1000
+        sleep(0.25)
+        efface('j2')
         mise_a_jour()
     
     if calculer_aire(lst_x,lst_y,lst_rayon,joueur1) == calculer_aire(lst_x,lst_y,lst_rayon,joueur2):
