@@ -9,16 +9,17 @@ from decimal import getcontext
 #-----Fonctions-----
 
 def etiquette(joueur, tour) :
+    tag = ''
     if joueur == joueur1 :
-        return tag + str(tour)
         tag = 'j1_'
+        return tag + str(tour)
     elif joueur == joueur2 :
         tag = 'j2_'
         return tag + str(tour)
     else :
-        tag = 'div_'+str(tour)
-        tag1 = 'div_'+str(tour+1)
-        return tag, tag1  
+        tag = 'div_'
+        tag1 = 'div_'
+        return tag+str(tour), tag1+str(tour+1)
 
 '''Cette fonction calcule la distance entre 2 centre de cerlces'''
 
@@ -53,13 +54,16 @@ def intersection(distance, rayon):
             return True
     return False
 
-"""def divison_boule(x, y, lst_x, lst_y, distance, joueur) :
+def divison_boule(x, y, lst_x, lst_y, distance, joueur, tour) :
+    if joueur == joueur1 :
+        etiquette(joueur2, )
+    tag3, tag4 = etiquette('', tour)
     for i in range(len(distance)) :
         if distance[i] < rayon :
-            cercle(x, y, 50-distance[i], 'black', joueur, 1, 'test')
-            cercle()
+            cercle(x, y, 50-distance[i], 'black', joueur, 1, tag3)
+            cercle(x+(50-distance[i]), y, 50/(50-distance[i]), 'black', joueur, 1, tag4)
     return
-"""
+
 
 '''Les fonctions j1 et j2 sont des fonctions pour pouvoir attribuer des couleurs froides aléatoirement au joueur1 et des couleurs chaudes aléatoirement au joueur2.'''
 
@@ -92,7 +96,6 @@ def Victoire(distance):
     SommeAireJ2 = 0
     res = rayon**2 * pi
     res *= tour
-    intersection()
     R = rayon 
     r = rayon 
     d = distance
@@ -124,7 +127,7 @@ def Jeu():
             if intersection(distance1, rayon) == False :
                 cercle(x1, y1, rayon, 'black', joueur1, 1, tag)
             else :
-                #divison_boule(x1, y1, lst_x, lst_y, distance1, joueur2)
+                divison_boule(x1, y1, lst_x, lst_y, distance1, joueur2, tour)
                 lst_x[-1] = 1000**1000
                 lst_y[-1] = 1000**1000
         x2, y2, z2 = attente_clic()
