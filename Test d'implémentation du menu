@@ -97,7 +97,7 @@ def j2():
     return joueur2
 
 
-def Victoire(distance):
+def Victoire():
     SommeAireJ1 = 1
     SommeAireJ2 = 0
     '''
@@ -130,7 +130,7 @@ def menu_textuel(x1, y1, x2, y2, chaine='') :
     :param str chaine: chaîne de caractère
 
     """
-    lettres = 0
+    lettres = 1
     taille = 24
     coeff = 6
     if width != 400 :
@@ -160,15 +160,9 @@ def start() :
     x_gauche = int(largeurFenetre/10)
     rectangle(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'grey', 'grey')
     rectangle(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'grey', 'grey')
-
-    if Victoire() == True:
-        menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Joueur1 a gagné')
-    else:
-        menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Joueur2 a gagné')
-    
-    menu_textuel(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'Merci d\'avoir joué !')
-    attente_clic()
-    ferme_fenetre()
+    menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Jouer')
+    menu_textuel(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'Quitter')
+    menu_textuel(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, '')
     return True
     
 
@@ -183,8 +177,13 @@ def fin():
     x_gauche = int(largeurFenetre/10)
     rectangle(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'grey', 'grey')
     rectangle(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'grey', 'grey')
-    menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Rejouer')
-    menu_textuel(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'Quitter')
+
+    if Victoire() == True:
+        menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Joueur1 a gagné')
+    else:
+        menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Joueur2 a gagné')
+
+    menu_textuel(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'Merci d\'avoir joué !')
     attente_clic()
     ferme_fenetre()
 
@@ -244,8 +243,10 @@ if __name__ == '__main__':
     tour = 5
     rayon = 50
     width = 500
-    start()
-    if start == True:
+    if start() == True:
+        attente_clic()
+        ferme_fenetre()
         Jeu()
+        fin()
     else:
         fin()
