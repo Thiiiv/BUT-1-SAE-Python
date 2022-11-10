@@ -10,10 +10,15 @@ from decimal import getcontext
 
 def etiquette(joueur, tour) :
     if joueur == joueur1 :
+        return tag + str(tour)
         tag = 'j1_'
-    else :
+    elif joueur == joueur2 :
         tag = 'j2_'
-    return tag + str(tour)   
+        return tag + str(tour)
+    else :
+        tag = 'div_'+str(tour)
+        tag1 = 'div_'+str(tour+1)
+        return tag, tag1  
 
 '''Cette fonction calcule la distance entre 2 centre de cerlces'''
 
