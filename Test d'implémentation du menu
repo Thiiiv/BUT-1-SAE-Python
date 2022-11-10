@@ -134,11 +134,11 @@ def calculer_aire(lst_x,lst_y,lst_rayon, joueur):
 
 
 
-def menu_textuel(x1, y1, x2, y2, chaine='') :
+def menu_textuel(x1, y1, x2, y2, chaine='', tag='None') :
     """
     Affiche le texte centré par rapport au rectangle.
 
-    :param float x1: ax du rectange 
+    :param float x1: ax du rectange
     :param float x2: bx du rectange
     :param float y1: ay du rectange
     :param float y2: by du rectange
@@ -149,7 +149,7 @@ def menu_textuel(x1, y1, x2, y2, chaine='') :
     dy = y2-y1
     ancrage = (dx-longueur_texte(chaine))/2
     milieu_y = (dy-hauteur_texte())/2
-    texte(x1+ancrage, y1+milieu_y, chaine, 'black', 'nw', 'Purisa')
+    texte(x1+ancrage, y1+milieu_y, chaine, 'black', 'nw', 'Purisa', 24, tag)
 
 
 def start() :
@@ -226,6 +226,7 @@ def Jeu():
     distance2 = []
     tag = []
     lst_rayon = []
+    
     for i in range(tour) :
         x1, y1, z1 = attente_clic()
         lst_x.append(x1)
@@ -235,6 +236,8 @@ def Jeu():
         distance1 = calc_distance(x1, y1, lst_x, lst_y, joueur1)
         print("distance1 :", distance1)
         print()
+        menu_textuel(75, 15, 75, 15, 'Tour: J1', 1)
+        efface('1')
         if i == 0 :
             cercle(x1, y1, rayon, 'black', joueur1, 1, tag[-1])
         else :
@@ -245,6 +248,8 @@ def Jeu():
                 lst_x[-1] = 1000**1000
                 lst_y[-1] = 1000**1000
         x2, y2, z2 = attente_clic()
+        menu_textuel(75, 15, 75, 15, 'Tour: J2', 2)
+        efface('2')
         lst_x.append(x2)
         lst_y.append(y2)
         lst_rayon.append(rayon)
