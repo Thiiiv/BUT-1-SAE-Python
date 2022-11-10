@@ -3,7 +3,7 @@
 from upemtk import *
 from random import randint
 from time import *
-from math import sqrt, atan2, acos, pi
+from math import sqrt, atan2, acos, pi, cos, sin
 from decimal import getcontext
 
 #-----Fonctions-----
@@ -27,24 +27,48 @@ def calc_distance(x, y, lst_x, lst_y, joueur) :
     distance = []
     temp = []
     min = 0
+    x_proche = 0
+    y_proche = 0
+    sens = 0
+    sens2 = 0
     if joueur == joueur1 :
         min = 1
     else :
         min = 0
         
     for i in range(min, len(lst_x), 2) :
-        if x >= lst_x[i] and lst_x[i] != 1000**1000 :
+        if x >= lst_x[i] :
             temp.append(x - lst_x[i])
         if x < lst_x[i] and lst_x[i] != 1000**1000 :
             temp.append(lst_x[i] - x)
-        if y >= lst_y[i] and lst_y[i] != 1000**1000 :
+        if y >= lst_y[i] :
             temp.append(y - lst_y[i])
-        if y < lst_y[i] and lst_y[i] != 1000**1000 :
+        if y < lst_y[i] and lst_x[i] != 1000**1000 :
             temp.append(lst_y[i] - y)
+    
+    if len(temp) > 1 :
+        x_proche = temp[0]
+        y_proche = temp[1]
+    for k in range(0, len(temp), 2) :
+        if temp[k] < x_proche :
+            x_proche = temp[k]
+        if k+1 < len(temp) :
+            if temp[k+1] < y_proche :
+                y_proche = temp[k+1]
+    
+    if x_proche-x < 0 :
+        x_proche = -(x_proche-x)
+    else :
+        x_proche = x_proche+x
+    if y_proche-y < 0 :
+        y_proche = -(y_proche-y)
+    else :
+        y_proche = y_proche+y
+        
     for j in range(0, len(temp), 2) :
         if j+1 < len(temp) :
             distance.append(sqrt(temp[j]**2 + temp[j+1]**2))
-    return distance
+    return distance, x_proche, y_proche
 
 def intersection(distance, rayon):
     temp = 1
@@ -53,15 +77,23 @@ def intersection(distance, rayon):
             temp = 0
             return True
     return False
-
-def divison_boule(x, y, lst_x, lst_y, distance, joueur, tour) :
-    if joueur == joueur1 :
-        etiquette(joueur2, )
-    tag3, tag4 = etiquette('', tour)
-    for i in range(len(distance)) :
-        if distance[i] < rayon :
-            cercle(x, y, 50-distance[i], 'black', joueur, 1, tag3)
-            cercle(x+(50-distance[i]), y, 50/(50-distance[i]), 'black', joueur, 1, tag4)
+    
+    
+def divison_boule(x, y, x_proche, y_proche, joueur, tour, tag) :
+    dy = y-y_proche
+    dx = x-x_proche
+    angle = atan2(dy, dx)
+    print("x_proche :", x_proche, "| y_proche :", y_proche, "| x :", x, "| y :", y)
+    print(angle)
+    distance = sqrt(dx**2+dy**2)
+    if distance < 50 :
+        new_x = x + 50 * cos(angle)
+        new_y = y + 50 * sin(angle)
+        tag3, tag4 = etiquette('', tour)
+        efface(tag[-1])
+        cercle(x, y, 50-distance, 'black', joueur, 1, tag3)
+        cercle(new_x, new_y, 50-(50-distance), 'black', joueur, 1, tag4)
+        print(new_x, new_y) 
     return
 
 
@@ -94,33 +126,33 @@ def j2():
 def Victoire(distance):
     SommeAireJ1 = 0
     SommeAireJ2 = 0
-    aire1 = rayon**2 * pi
-    aire2 *= tour
-
+    res = rayon**2 * pi
+    res *= tour
     R = rayon 
     r = rayon 
-
     d = distance
-
-    AireIntersection = r**2 * acos((d**2 + r**2 - R**2) / (2 * d * r)) + R**2 * acos((d**2 + R**2 - r**2) / (2 * d * R)) -1/2 * sqrt((-d + r + R) * (d + r - R) * (d - r + R) * (d + r + R))
-
+    d1 = R**2 - r**2 + d**2
+    d2 = d - d1 
+    AireIntersection = r**2 * acos(d1/r) - d1 * sqrt(r**2 - d1**2) + R**2 * acos(d2/R) - d2 * sqrt(R**2 - d2**2)
 
 '''La fonction Jeu est le squelette de notre code pour le Jeu des Boules elle réutilise les fonctions précédentes pour pouvoir proposé un jeu fonctionnelle.'''
 
-def Jeu():
+def Jeu(rayon, tour, joueur1, joueur2):
     cree_fenetre(500, 500)
     lst_x = []
     lst_y = []
     distance1 = []
     distance2 = []
     tag = []
+    x_proche = 0
+    y_proche = 0
     
     for i in range(tour) :
         x1, y1, z1 = attente_clic()
         lst_x.append(x1)
         lst_y.append(y1)
         tag.append(etiquette(joueur1, i))
-        distance1 = calc_distance(x1, y1, lst_x, lst_y, joueur1)
+        distance1, x_proche, y_proche = calc_distance(x1, y1, lst_x, lst_y, joueur1)
         print("distance1 :", distance1)
         print()
         if i == 0 :
@@ -129,19 +161,20 @@ def Jeu():
             if intersection(distance1, rayon) == False :
                 cercle(x1, y1, rayon, 'black', joueur1, 1, tag)
             else :
-                divison_boule(x1, y1, lst_x, lst_y, distance1, joueur2, tour)
+                divison_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag)
                 lst_x[-1] = 1000**1000
                 lst_y[-1] = 1000**1000
         x2, y2, z2 = attente_clic()
         lst_x.append(x2)
         lst_y.append(y2)
         tag.append(etiquette(joueur2, i))
-        distance2 = calc_distance(x2, y2, lst_x, lst_y, joueur2)
+        distance2, x_proche, y_proche = calc_distance(x2, y2, lst_x, lst_y, joueur2)
         print("distance2 :", distance2)
         print()
         if intersection(distance2, rayon) == False :
             cercle(x2, y2, rayon, 'black', joueur2, 1, tag[-1])
         else :
+            divison_boule(x2, y2, x_proche, y_proche, joueur1, tour, tag)
             lst_x[-1] = 1000**1000
             lst_y[-1] = 1000**1000
         mise_a_jour()
@@ -156,4 +189,4 @@ if __name__ == '__main__':
     joueur2 = j2()
     tour = 5
     rayon = 50
-    Jeu()
+    Jeu(rayon, tour, joueur1, joueur2)
