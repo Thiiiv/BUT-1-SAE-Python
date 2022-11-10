@@ -130,20 +130,11 @@ def menu_textuel(x1, y1, x2, y2, chaine='') :
     :param str chaine: chaîne de caractère
 
     """
-    lettres = 1
-    taille = 24
-    coeff = 6
-    if width != 400 :
-        coeff = coeff*1.5*(width/400)
-
-    for lettre in chaine :
-        lettres += 1
-    milieu_y = y2-y1-taille/2
-    milieu_x = x2 - x1
-    ancrage = x1
-    if milieu_x - lettres*24 != 0 :
-        ancrage = x1 + coeff*(taille/lettres)
-    texte(ancrage, milieu_y, chaine, 'black', 'nw', 'Purisa', taille)
+    dx = x2-x1
+    dy = y2-y1
+    ancrage = (dx-longueur_texte(chaine))/2
+    milieu_y = (dy-hauteur_texte())/2
+    texte(x1+ancrage, y1+milieu_y, chaine, 'black', 'nw', 'Purisa')
 
 
 def start() :
@@ -154,16 +145,35 @@ def start() :
     hauteurFenetre = 800
     cree_fenetre(largeurFenetre, hauteurFenetre)
     rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
-    y_superieur = int(hauteurFenetre/4)
-    y_inferieur = int(3*(hauteurFenetre/4))
-    x_milieu = int(largeurFenetre/2)
-    x_gauche = int(largeurFenetre/10)
-    rectangle(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'grey', 'grey')
-    rectangle(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'grey', 'grey')
-    menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Jouer')
-    menu_textuel(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'Quitter')
-    menu_textuel(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, '')
-    return True
+    x_gauche = 10
+    x_droite = 400-10
+    y_superieur = 200
+    y_inferieur = 600
+    rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey', 1, 'jouer')
+    rectangle(x_droite+x_gauche, y_superieur, (x_droite*2), y_inferieur, 'grey', 'grey', 1, 'quitter')
+    menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Jouer')
+    menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Quitter')
+    x, y, z = attente_clic()
+    print(x, y)
+    if x >= x_gauche and x <= x_droite and y >= y_superieur and y <= y_inferieur :
+        efface('jouer')
+        mise_a_jour()
+        rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'green', 'green', 1, 'jouer')
+        menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Jouer')
+        mise_a_jour()
+        sleep(0.5)
+        ferme_fenetre()
+        Jeu()
+        fin()
+    if x >= (x_droite+x_gauche) and x <= x_droite*2 and y >= y_superieur and y <= y_inferieur :
+        efface('quitter')
+        mise_a_jour()
+        rectangle(x_droite+x_gauche, y_superieur, (x_droite*2), y_inferieur, 'red', 'red', 1, 'quitter')
+        menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Quitter')
+        mise_a_jour()
+        sleep(0.5)
+        ferme_fenetre()
+    return
     
 
 def fin():
@@ -171,19 +181,19 @@ def fin():
     hauteurFenetre = 800
     cree_fenetre(largeurFenetre, hauteurFenetre)
     rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
-    y_superieur = int(hauteurFenetre/4)
-    y_inferieur = int(3*(hauteurFenetre/4))
-    x_milieu = int(largeurFenetre/2)
-    x_gauche = int(largeurFenetre/10)
-    rectangle(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'grey', 'grey')
-    rectangle(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'grey', 'grey')
+    x_gauche = 10
+    x_droite = 400-10
+    y_superieur = 200
+    y_inferieur = 600
+    rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey')
+    rectangle(x_droite+x_gauche, y_superieur, (x_droite*2), y_inferieur, 'grey', 'grey')
 
     if Victoire() == True:
-        menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Joueur1 a gagné')
+        menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Joueur1 a gagné')
     else:
-        menu_textuel(x_gauche, y_superieur, x_milieu-(x_gauche/2), y_inferieur, 'Joueur2 a gagné')
+        menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Joueur2 a gagné')
 
-    menu_textuel(x_milieu+(x_gauche/2), y_superieur, x_gauche*9, y_inferieur, 'Merci d\'avoir joué !')
+    menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Merci d\'avoir joué !')
     attente_clic()
     ferme_fenetre()
 
@@ -242,11 +252,5 @@ if __name__ == '__main__':
     joueur2 = j2()
     tour = 5
     rayon = 50
-    width = 500
-    if start() == True:
-        attente_clic()
-        ferme_fenetre()
-        Jeu()
-        fin()
-    else:
-        fin()
+    start()
+    
