@@ -94,14 +94,16 @@ def j2():
 def Victoire(distance):
     SommeAireJ1 = 0
     SommeAireJ2 = 0
-    res = rayon**2 * pi
-    res *= tour
+    aire1 = rayon**2 * pi
+    aire2 *= tour
+
     R = rayon 
     r = rayon 
+
     d = distance
-    d1 = R**2 - r**2 + d**2
-    d2 = d - d1 
-    AireIntersection = r**2 * acos(d1/r) - d1 * sqrt(r**2 - d1**2) + R**2 * acos(d2/R) - d2 * sqrt(R**2 - d2**2)
+
+    AireIntersection = r**2 * acos((d**2 + r**2 - R**2) / (2 * d * r)) + R**2 * acos((d**2 + R**2 - r**2) / (2 * d * R)) -1/2 * sqrt((-d + r + R) * (d + r - R) * (d - r + R) * (d + r + R))
+
 
 '''La fonction Jeu est le squelette de notre code pour le Jeu des Boules elle réutilise les fonctions précédentes pour pouvoir proposé un jeu fonctionnelle.'''
 
