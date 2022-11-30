@@ -19,15 +19,6 @@ def etiquette(joueur, tour) :
         tag = 'div_'
         tag1 = 'div_'
         return tag+str(tour), tag1+str(tour+1)
-    
-def obstacles(nombre) :
-    for i in range(nombre) :
-        x = randint(rayon, 1000-rayon)
-        y = randint(rayon, 1000-rayon)
-        cercle(x, y, rayon, 'black', 'grey', 1, "obstacle")
-        obtx.append(x)
-        obty.append(y)
-        
 
 '''Cette fonction calcule la distance entre 2 centre de cerlces'''
 
@@ -61,7 +52,12 @@ def calc_distance(x, y, lst_x, lst_y, joueur) :
     return distance, x_proche, y_proche, indice
 
 def calculer_aire(lst_x,lst_y,lst_rayon, joueur):
-    return
+    '''pour chaque cercle dun joueur:
+    pour chaque pixel contenu dans carré:
+        if pixel in cercle:
+            liste.append(coord)
+    score=len(set(liste))'''
+    pass
 
 def intersection(distance, rayon):
     for i in range(len(distance)):
@@ -85,6 +81,10 @@ def menu_textuel(x1, y1, x2, y2, chaine='', tag='None') :
     ancrage = (dx-longueur_texte(chaine))/2
     milieu_y = (dy-hauteur_texte())/2
     texte(x1+ancrage, y1+milieu_y, chaine, 'black', 'nw', 'Purisa', 24, tag)
+    if tag == 'j2':
+        texte(x1+ancrage, y1+milieu_y, chaine, joueur1, 'nw', 'Purisa', 24, tag)
+    if tag == 'j1':
+        texte(x1+ancrage, y1+milieu_y, chaine, joueur2, 'nw', 'Purisa', 24, tag)
 
 def division_boule(x, y, x_proche, y_proche, joueur, tour, tag, indice) :
     dy = y-y_proche
@@ -208,7 +208,6 @@ def Jeu():
     compteur1 = 0
     compteur2 = 0
     obstacles(5)
-    
     for i in range(tour) :
         x1, y1, z1 = attente_clic()
         efface('j2')
@@ -260,6 +259,27 @@ def Jeu():
         fin(2)
     else :
         fin(0)
+
+#-----Variantes-----
+
+def sablier():
+    t1 = time() + 20 if sablier else None
+    while t1 is None or time() < t1:
+        ev = donne_evenement() 
+        typeEv = type_evenement(ev)
+
+def affichage(temps, couleur):
+    efface('timer')
+    texte(19*1//20,h//32,f'')
+
+def obstacles(nombre) :
+    for i in range(nombre) :
+        x = randint(rayon, 1000-rayon)
+        y = randint(rayon, 1000-rayon)
+        cercle(x, y, rayon, 'black', 'grey', 1, "obstacle")
+        obtx.append(x)
+        obty.append(y)
+
 #-----main-----
 
 if __name__ == '__main__':
