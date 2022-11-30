@@ -381,12 +381,31 @@ def obstacles(nombre) :
 
 def taille_des_boules(joueur) :
     """Pour le paramètre joueur, c'est 1 pour le joueur 1 et 2 pour le joueur 2"""
-    rayon = int(input("Tailles des boules :"))
+    temp = []
+    temp2 = ''   
+    fin = 0
+    while True :
+        temp.append(attente_touche())
+        print(temp)
+        for i in range(len(temp)) :
+            if temp[i] == 'Return' :
+                temp.pop(i)
+                fin = 1
+                break
+        if fin == 1 :
+            for i in range(len(temp)) :
+                if temp[i] != 'Return' :
+                    temp2 += str(temp[i])
+            rayon = int(temp2)
+            break
+        
+        
     if rayon <= budget[joueur] :   
         budget[joueur] = budget[joueur] - rayon
         return rayon
     else :
         return False
+    
 
 #-----main-----
 
