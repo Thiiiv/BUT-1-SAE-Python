@@ -113,7 +113,7 @@ def start() :
     cree_fenetre(largeurFenetre, hauteurFenetre)
     rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
     x_gauche = 10
-    x_droite = 400-10
+    x_droite = largeurFenetre//2-x_gauche
     y_superieur = 200
     y_inferieur = 600
     rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey', 1, 'jouer')
@@ -145,7 +145,7 @@ def fin(n):
     cree_fenetre(largeurFenetre, hauteurFenetre)
     rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
     x_gauche = 10
-    x_droite = 400-10
+    x_droite = largeurFenetre//2-x_gauche
     y_superieur = 200
     y_inferieur = 600
     rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey')
@@ -207,7 +207,7 @@ def Jeu():
     indO = 0
     compteur1 = 0
     compteur2 = 0
-    obstacles(5)
+    obstacles(randint(1, 5))
     for i in range(tour) :
         x1, y1, z1 = attente_clic()
         efface('j2')
