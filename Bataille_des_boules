@@ -86,6 +86,9 @@ def menu_textuel(x1, y1, x2, y2, chaine='', tag='None') :
         texte(x1+ancrage, y1+milieu_y, chaine, joueur1, 'nw', 'Purisa', 24, tag)
     if tag == 'j1':
         texte(x1+ancrage, y1+milieu_y, chaine, joueur2, 'nw', 'Purisa', 24, tag)
+    if tag == 'creer':
+        texte(x1+ancrage, y1+milieu_y, chaine, joueur2, 'nw', 'Purisa', 24, tag)
+
 
 def division_boule(x, y, x_proche, y_proche, joueur, tour, tag, indice) :
     dy = y-y_proche
@@ -117,12 +120,15 @@ def start() :
     x_droite = largeurFenetre//2 - x_gauche
     y_superieur = 200
     y_inferieur = hauteurFenetre - y_superieur
-    rectangle(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'red', 'red', 1, 'Jeux')
+    rectangle(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'orange', 'red', 1, 'Jeux')
     rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey', 1, 'jouer')
     rectangle(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'grey', 'grey', 1, 'quitter')
+    cercle(largeurFenetre*0.75, y_superieur//2, rayon, 'orange', 'red', 1, 'Jeux1')
+    cercle(25*x_gauche, y_superieur//2, rayon, 'orange', 'red', 1, 'Jeux2')
     menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'Jeux de boules')
     menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Jouer')
     menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Quitter')
+    menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//5, 'Créer par Thivakar et Tony', 'creer')
     x, y, z = attente_clic()
     print(x, y)
     if x >= x_gauche and x <= x_droite and y >= y_superieur and y <= y_inferieur :
@@ -133,6 +139,7 @@ def start() :
         mise_a_jour()
         sleep(0.25)
         ferme_fenetre()
+        menu_variante()
         Jeu()
     if x >= (x_droite+x_gauche) and x <= x_droite*2 and y >= y_superieur and y <= y_inferieur :
         efface('quitter')
@@ -157,6 +164,8 @@ def fin(n):
     rectangle(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'red', 'red', 1, 'Joué')
     rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey')
     rectangle(x_droite+x_gauche, y_superieur, (x_droite*2), y_inferieur, 'grey', 'grey')
+    cercle(largeurFenetre*0.75, y_superieur//2.5, rayon, 'orange', 'red', 1, 'Jeux3')
+    cercle(25*x_gauche, y_superieur//2.5, rayon, 'orange', 'red', 1, 'Jeux4')
     menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'Merci d\'avoir joué !')
     
     if n == 0:
@@ -168,6 +177,7 @@ def fin(n):
 
     menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Quitter')
     attente_clic()
+    sleep(1)
     ferme_fenetre()
 
 
@@ -272,6 +282,9 @@ def Jeu():
         fin(0)
 
 #-----Variantes-----
+
+def menu_variante():
+    pass
 
 def sablier():
     '''Fonctions pour la variante sablier'''
