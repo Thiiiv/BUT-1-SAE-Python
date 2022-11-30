@@ -115,7 +115,8 @@ def start() :
     Affiche le menu de départ pour lancer le jeu ou le quitter lorsque celui-ci est terminé
     """
     cree_fenetre(largeurFenetre, hauteurFenetre)
-    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
+    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'orange', 'orange')
+    rectangle(5, hauteurFenetre-5, largeurFenetre-5, 5, 'black', 'black')
     x_gauche = 10
     x_droite = largeurFenetre//2 - x_gauche
     y_superieur = 200
@@ -123,12 +124,14 @@ def start() :
     rectangle(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'orange', 'red', 1, 'Jeux')
     rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey', 1, 'jouer')
     rectangle(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'grey', 'grey', 1, 'quitter')
+    rectangle(largeurFenetre*0.75, y_superieur*4.4, x_droite//2, y_superieur*4.6, 'orange', 'red', 1, 'leg')
     cercle(largeurFenetre*0.75, y_superieur//2, rayon, 'orange', 'red', 1, 'Jeux1')
     cercle(25*x_gauche, y_superieur//2, rayon, 'orange', 'red', 1, 'Jeux2')
     menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'Jeux de boules')
     menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Jouer')
     menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Quitter')
     menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//5, 'Créer par Thivakar et Tony', 'creer')
+    menu_textuel(largeurFenetre*0.75, y_superieur*4.5, x_droite//2, y_superieur*4.5, 'SAE1-01 & SAE1-02', 'leg1')
     x, y, z = attente_clic()
     print(x, y)
     if x >= x_gauche and x <= x_droite and y >= y_superieur and y <= y_inferieur :
@@ -156,7 +159,8 @@ def fin(n):
     Affiche le menu de fin pour dire le gagnant du jeu et quitte.
     """
     cree_fenetre(largeurFenetre, hauteurFenetre)
-    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
+    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'orange', 'orange')
+    rectangle(5, hauteurFenetre-5, largeurFenetre-5, 5, 'black', 'black')
     x_gauche = 10
     x_droite = largeurFenetre//2-x_gauche
     y_superieur = 200
@@ -214,7 +218,8 @@ def Jeu():
     '''La fonction Jeu est le squelette de notre code pour le Jeu des 
     Boules elle réutilise les fonctions précédentes pour pouvoir proposé un jeu fonctionnelle.'''
     cree_fenetre(hauteurFenetre, largeurFenetre)
-    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
+    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'orange', 'orange')
+    rectangle(5, hauteurFenetre-5, largeurFenetre-5, 5, 'black', 'black')
     distance1 = []
     distance2 = []
     distanceO = []
