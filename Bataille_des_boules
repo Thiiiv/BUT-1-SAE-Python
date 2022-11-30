@@ -246,10 +246,12 @@ def Jeu(rayon):
         print("DistanceO :", distanceO)
         print("distance1 :", distance1)
         print()
-        if etat_taille == True :
+        if etat_taille[0] == True :
             rayon = taille_des_boules(1)
+            efface('budget_j2')
+            menu_textuel(largeurFenetre-55, 15, largeurFenetre-55, 15, "Il vous reste :"+str(budget[1]), 'budget_j1')
+            mise_a_jour()
         if i == 0 and intersection(distanceO, rayon) == False :
-            rayon = taille_des_boules(1)
             tag1.append(etiquette(joueur1, i))
             cercle(x1, y1, rayon, 'black', joueur1, 1, tag1[compteur1])
             compteur1 += 1
@@ -272,8 +274,11 @@ def Jeu(rayon):
         distanceO, xO, yO, indO = calc_distance(x2, y2, obtx, obty, joueur2) #variante obstacles
         print("distance2 :", distance2)
         print()
-        if etat_taille == True :
+        if etat_taille[0] == True :
             rayon = taille_des_boules(2)
+            efface('budget_j1')
+            menu_textuel(largeurFenetre-55, 15, largeurFenetre-55, 15, "Il vous reste :"+str(budget[2]), 'budget_j2')
+            mise_a_jour()
         if intersection(distance2, rayon) == False and intersection(distanceO, rayon) == False :
             tag2.append(etiquette(joueur2, i))
             cercle(x2, y2, rayon, 'black', joueur2, 1, tag2[compteur2])
@@ -332,8 +337,8 @@ def menu_variante(etat_taille, etat_obt):
         if x >= x_gauche and x <= x_droite and y >= y_superieur and y<= y_inferieur :
             efface('taille des boucles')
             mise_a_jour()
-            etat_taille = not etat_taille
-            if etat_taille == True :
+            etat_taille[0] = not etat_taille[0]
+            if etat_taille[0] == True :
                 rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'green', 'green', 1, 'taille des boules')
             else :
                 rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'red', 'red', 1, 'taille des boules')
@@ -343,8 +348,8 @@ def menu_variante(etat_taille, etat_obt):
         if x >= x_gauche and x <= x_droite and y >= y_inferieur+10 and y <= y_superieur*3 :
             efface('obstacles')
             mise_a_jour()
-            etat_obt = not etat_obt
-            if etat_obt == True :
+            etat_obt[0] = not etat_obt[0]
+            if etat_obt[0] == True :
                 rectangle(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'green', 'green', 1, 'obstacles')
             else :
                 rectangle(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'red', 'red', 1, 'obstacles')
@@ -352,7 +357,7 @@ def menu_variante(etat_taille, etat_obt):
             mise_a_jour()
         
         if x >= x_gauche and x <= x_droite and y >= (y_superieur*3)+10 and y <= y_superieur*4 :
-            return etat_taille, etat_obt
+            return
 
 def sablier():
     '''Fonctions pour la variante sablier'''
@@ -398,7 +403,7 @@ if __name__ == '__main__':
     rayon = 50
     largeurFenetre = 1000
     hauteurFenetre = 1000
-    budget = set([0, 200, 200])
-    etat_taille = False
-    etat_obt = False
+    budget = [0, 200, 200]
+    etat_taille = [False]
+    etat_obt = [False]
     start()
