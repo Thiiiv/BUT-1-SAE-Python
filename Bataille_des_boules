@@ -237,7 +237,7 @@ def Jeu():
     for i in range(tour) :
         x1, y1, z1 = attente_clic()
         efface('j2')
-        menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j1')
+        menu_textuel(75, 25, 75, 15, 'Tour: J2', 'j1')
         mise_a_jour()
         distance1, x_proche, y_proche, indice = calc_distance(x1, y1, lst_x2, lst_y2, joueur1)
         distanceO, xO, yO, indO = calc_distance(x1, y1, obtx, obty, joueur1) #variante obstacles
@@ -261,7 +261,7 @@ def Jeu():
                 division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
         x2, y2, z2 = attente_clic()
         efface('j1')
-        menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j2')
+        menu_textuel(75, 25, 75, 15, 'Tour: J1', 'j2')
         mise_a_jour()
         distance2, x_proche, y_proche, indice = calc_distance(x2, y2, lst_x1, lst_y1, joueur2)
         distanceO, xO, yO, indO = calc_distance(x2, y2, obtx, obty, joueur2) #variante obstacles
