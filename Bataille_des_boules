@@ -110,6 +110,7 @@ def division_boule(x, y, x_proche, y_proche, joueur, tour, tag, indice) :
         print(new_x, new_y) 
     return
 
+
 def start() :
     """
     Affiche le menu de départ pour lancer le jeu ou le quitter lorsque celui-ci est terminé
@@ -142,8 +143,9 @@ def start() :
         mise_a_jour()
         sleep(0.25)
         ferme_fenetre()
-        menu_variante()
-        Jeu()
+        menu_variante(etat_taille, etat_obt)
+        ferme_fenetre()
+        Jeu(rayon)
     if x >= (x_droite+x_gauche) and x <= x_droite*2 and y >= y_superieur and y <= y_inferieur :
         efface('quitter')
         mise_a_jour()
@@ -214,7 +216,7 @@ def j2():
 
 
 
-def Jeu():
+def Jeu(rayon):
     '''La fonction Jeu est le squelette de notre code pour le Jeu des 
     Boules elle réutilise les fonctions précédentes pour pouvoir proposé un jeu fonctionnelle.'''
     cree_fenetre(hauteurFenetre, largeurFenetre)
@@ -237,14 +239,17 @@ def Jeu():
     for i in range(tour) :
         x1, y1, z1 = attente_clic()
         efface('j2')
-        menu_textuel(75, 25, 75, 15, 'Tour: J2', 'j1')
+        menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j1')
         mise_a_jour()
         distance1, x_proche, y_proche, indice = calc_distance(x1, y1, lst_x2, lst_y2, joueur1)
         distanceO, xO, yO, indO = calc_distance(x1, y1, obtx, obty, joueur1) #variante obstacles
         print("DistanceO :", distanceO)
         print("distance1 :", distance1)
         print()
+        if etat_taille == True :
+            rayon = taille_des_boules(1)
         if i == 0 and intersection(distanceO, rayon) == False :
+            rayon = taille_des_boules(1)
             tag1.append(etiquette(joueur1, i))
             cercle(x1, y1, rayon, 'black', joueur1, 1, tag1[compteur1])
             compteur1 += 1
@@ -261,12 +266,14 @@ def Jeu():
                 division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
         x2, y2, z2 = attente_clic()
         efface('j1')
-        menu_textuel(75, 25, 75, 15, 'Tour: J1', 'j2')
+        menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j2')
         mise_a_jour()
         distance2, x_proche, y_proche, indice = calc_distance(x2, y2, lst_x1, lst_y1, joueur2)
         distanceO, xO, yO, indO = calc_distance(x2, y2, obtx, obty, joueur2) #variante obstacles
         print("distance2 :", distance2)
         print()
+        if etat_taille == True :
+            rayon = taille_des_boules(2)
         if intersection(distance2, rayon) == False and intersection(distanceO, rayon) == False :
             tag2.append(etiquette(joueur2, i))
             cercle(x2, y2, rayon, 'black', joueur2, 1, tag2[compteur2])
@@ -288,8 +295,64 @@ def Jeu():
 
 #-----Variantes-----
 
-def menu_variante():
-    pass
+def menu_variante(etat_taille, etat_obt):
+    cree_fenetre(largeurFenetre, hauteurFenetre)
+    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'orange', 'orange')
+    rectangle(5, hauteurFenetre-5, largeurFenetre-5, 5, 'black', 'black')
+    x_gauche = 10
+    x_droite = largeurFenetre//2 - x_gauche
+    y_superieur = 200
+    y_inferieur = y_superieur*2
+    
+    # Boutons options
+    rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'red', 'red', 1, 'taille des boules')
+    rectangle(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'red', 'red', 1, 'obstacles')
+    rectangle(x_gauche, (y_superieur*3)+10, x_droite, y_superieur*4, 'grey', 'grey', 1, 'jouer')
+    
+    
+    # Element de design
+    rectangle(largeurFenetre*0.75, y_superieur*4.4, x_droite//2, y_superieur*4.6, 'orange', 'red', 1, 'leg')
+    rectangle(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'orange', 'red', 1, 'Jeux')
+    rectangle(largeurFenetre*0.75, y_superieur*4.4, x_droite//2, y_superieur*4.6, 'orange', 'red', 1, 'leg2')
+    cercle(largeurFenetre*0.75, y_superieur//2, rayon, 'orange', 'red', 1, 'Jeux3')
+    cercle(25*x_gauche, y_superieur//2, rayon, 'orange', 'red', 1, 'Jeux4')
+    
+    # Textes options
+    menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Taille Boules')
+    menu_textuel(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'Obstacles')
+    menu_textuel(x_gauche, (y_superieur*3)+10, x_droite, y_superieur*4, 'Jouer')
+    
+    # Texte générique
+    menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'Jeux de boules')
+    menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//5, 'Créer par Thivakar et Tony', 'creer')
+    menu_textuel(largeurFenetre*0.75, y_superieur*4.5, x_droite//2, y_superieur*4.5, 'SAE1-01 & SAE1-02', 'leg1')
+    
+    while True :
+        x, y, z = attente_clic()
+        if x >= x_gauche and x <= x_droite and y >= y_superieur and y<= y_inferieur :
+            efface('taille des boucles')
+            mise_a_jour()
+            etat_taille = not etat_taille
+            if etat_taille == True :
+                rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'green', 'green', 1, 'taille des boules')
+            else :
+                rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'red', 'red', 1, 'taille des boules')
+            menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Taille Boules')
+            mise_a_jour()
+        
+        if x >= x_gauche and x <= x_droite and y >= y_inferieur+10 and y <= y_superieur*3 :
+            efface('obstacles')
+            mise_a_jour()
+            etat_obt = not etat_obt
+            if etat_obt == True :
+                rectangle(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'green', 'green', 1, 'obstacles')
+            else :
+                rectangle(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'red', 'red', 1, 'obstacles')
+            menu_textuel(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'Obstacles')
+            mise_a_jour()
+        
+        if x >= x_gauche and x <= x_droite and y >= (y_superieur*3)+10 and y <= y_superieur*4 :
+            return etat_taille, etat_obt
 
 def sablier():
     '''Fonctions pour la variante sablier'''
@@ -311,6 +374,15 @@ def obstacles(nombre) :
         obtx.append(x)
         obty.append(y)
 
+def taille_des_boules(joueur) :
+    """Pour le paramètre joueur, c'est 1 pour le joueur 1 et 2 pour le joueur 2"""
+    rayon = int(input("Tailles des boules :"))
+    if rayon <= budget[joueur] :   
+        budget[joueur] = budget[joueur] - rayon
+        return rayon
+    else :
+        return False
+
 #-----main-----
 
 if __name__ == '__main__':
@@ -326,4 +398,7 @@ if __name__ == '__main__':
     rayon = 50
     largeurFenetre = 1000
     hauteurFenetre = 1000
+    budget = set([0, 200, 200])
+    etat_taille = False
+    etat_obt = False
     start()
