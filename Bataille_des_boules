@@ -8,6 +8,7 @@ from math import sqrt, atan2, acos, pi, cos, sin
 #-----Fonctions-----
 
 def etiquette(joueur, tour) :
+    '''Fonction pour nommé les cercles'''
     tag = ''
     if joueur == joueur1 :
         tag = 'jp'
@@ -20,9 +21,9 @@ def etiquette(joueur, tour) :
         tag1 = 'div_'
         return tag+str(tour), tag1+str(tour+1)
 
-'''Cette fonction calcule la distance entre 2 centre de cerlces'''
 
 def calc_distance(x, y, lst_x, lst_y, joueur) :
+    '''Cette fonction calcule la distance entre 2 centre de cerlces'''
     distance = []
     temp1 = []
     temp2 = []
@@ -113,11 +114,13 @@ def start() :
     cree_fenetre(largeurFenetre, hauteurFenetre)
     rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
     x_gauche = 10
-    x_droite = largeurFenetre//2-x_gauche
+    x_droite = largeurFenetre//2 - x_gauche
     y_superieur = 200
-    y_inferieur = 600
+    y_inferieur = hauteurFenetre - y_superieur
+    rectangle(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'red', 'red', 1, 'Jeux')
     rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey', 1, 'jouer')
-    rectangle(x_droite+x_gauche, y_superieur, (x_droite*2), y_inferieur, 'grey', 'grey', 1, 'quitter')
+    rectangle(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'grey', 'grey', 1, 'quitter')
+    menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'Jeux de boules')
     menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Jouer')
     menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Quitter')
     x, y, z = attente_clic()
@@ -142,14 +145,19 @@ def start() :
     return
 
 def fin(n):
+    """
+    Affiche le menu de fin pour dire le gagnant du jeu et quitte.
+    """
     cree_fenetre(largeurFenetre, hauteurFenetre)
     rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
     x_gauche = 10
     x_droite = largeurFenetre//2-x_gauche
     y_superieur = 200
-    y_inferieur = 600
+    y_inferieur = hauteurFenetre - y_superieur
+    rectangle(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'red', 'red', 1, 'Joué')
     rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey')
     rectangle(x_droite+x_gauche, y_superieur, (x_droite*2), y_inferieur, 'grey', 'grey')
+    menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'Merci d\'avoir joué !')
     
     if n == 0:
         menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Egalité')
@@ -158,14 +166,15 @@ def fin(n):
     if n == 2:
         menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Joueur2 a gagné')
 
-    menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Merci d\'avoir joué !')
+    menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Quitter')
     attente_clic()
     ferme_fenetre()
 
 
-'''Les fonctions j1 et j2 sont des fonctions pour pouvoir attribuer des couleurs froides aléatoirement au joueur1 et des couleurs chaudes aléatoirement au joueur2.'''
 
 def j1():
+    '''Les fonctions j1 et j2 sont des fonctions pour pouvoir attribuer des couleurs froides 
+    aléatoirement au joueur1 et des couleurs chaudes aléatoirement au joueur2.'''
     lst_col = ["blue","green","purple"]
     hazard = randint(0, 2) # Randomizer pour les couleurs
     joueur1 = "black"
@@ -190,10 +199,12 @@ def j2():
     return joueur2
 
 
-'''La fonction Jeu est le squelette de notre code pour le Jeu des Boules elle réutilise les fonctions précédentes pour pouvoir proposé un jeu fonctionnelle.'''
 
 def Jeu():
+    '''La fonction Jeu est le squelette de notre code pour le Jeu des 
+    Boules elle réutilise les fonctions précédentes pour pouvoir proposé un jeu fonctionnelle.'''
     cree_fenetre(hauteurFenetre, largeurFenetre)
+    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
     distance1 = []
     distance2 = []
     distanceO = []
@@ -207,14 +218,14 @@ def Jeu():
     indO = 0
     compteur1 = 0
     compteur2 = 0
-    obstacles(randint(1, 5))
+    obstacles(randint(1, 5)) #variante obstacles
     for i in range(tour) :
         x1, y1, z1 = attente_clic()
         efface('j2')
         menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j1')
         mise_a_jour()
         distance1, x_proche, y_proche, indice = calc_distance(x1, y1, lst_x2, lst_y2, joueur1)
-        distanceO, xO, yO, indO = calc_distance(x1, y1, obtx, obty, joueur1)
+        distanceO, xO, yO, indO = calc_distance(x1, y1, obtx, obty, joueur1) #variante obstacles
         print("DistanceO :", distanceO)
         print("distance1 :", distance1)
         print()
@@ -225,7 +236,7 @@ def Jeu():
             lst_x1.append(x1)
             lst_y1.append(y1)
         else :
-            if intersection(distance1, rayon) == False and intersection(distanceO, rayon) == False :
+            if intersection(distance1, rayon) == False and intersection(distanceO, rayon) == False : 
                 tag1.append(etiquette(joueur1, i))
                 cercle(x1, y1, rayon, 'black', joueur1, 1, tag1[compteur1])
                 compteur1 += 1
@@ -238,7 +249,7 @@ def Jeu():
         menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j2')
         mise_a_jour()
         distance2, x_proche, y_proche, indice = calc_distance(x2, y2, lst_x1, lst_y1, joueur2)
-        distanceO, xO, yO, indO = calc_distance(x2, y2, obtx, obty, joueur2)
+        distanceO, xO, yO, indO = calc_distance(x2, y2, obtx, obty, joueur2) #variante obstacles
         print("distance2 :", distance2)
         print()
         if intersection(distance2, rayon) == False and intersection(distanceO, rayon) == False :
@@ -263,6 +274,7 @@ def Jeu():
 #-----Variantes-----
 
 def sablier():
+    '''Fonctions pour la variante sablier'''
     t1 = time() + 20 if sablier else None
     while t1 is None or time() < t1:
         ev = donne_evenement() 
@@ -273,6 +285,7 @@ def affichage(temps, couleur):
     texte(19*1//20,h//32,f'')
 
 def obstacles(nombre) :
+    '''Fonctions pour la variante obstacles'''
     for i in range(nombre) :
         x = randint(rayon, 1000-rayon)
         y = randint(rayon, 1000-rayon)
