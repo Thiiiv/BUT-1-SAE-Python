@@ -4,97 +4,163 @@ from upemtk import *
 from random import randint
 from time import *
 from math import sqrt, atan2, acos, pi, cos, sin
-from decimal import getcontext
 
 #-----Fonctions-----
 
 def etiquette(joueur, tour) :
     tag = ''
     if joueur == joueur1 :
-        tag = 'j1_'
-        return tag + str(tour)
+        tag = 'jp'
+        return tag+str(tour)
     elif joueur == joueur2 :
-        tag = 'j2_'
-        return tag + str(tour)
+        tag = 'jd'
+        return tag+str(tour)
     else :
         tag = 'div_'
         tag1 = 'div_'
         return tag+str(tour), tag1+str(tour+1)
+    
+def obstacles(nombre) :
+    for i in range(nombre) :
+        x = randint(rayon, 1000-rayon)
+        y = randint(rayon, 1000-rayon)
+        cercle(x, y, rayon, 'black', 'grey', 1, "obstacle")
+        obtx.append(x)
+        obty.append(y)
+        
 
 '''Cette fonction calcule la distance entre 2 centre de cerlces'''
 
 def calc_distance(x, y, lst_x, lst_y, joueur) :
     distance = []
-    temp = []
-    min = 0
+    temp1 = []
+    temp2 = []
+    indice = 0
     x_proche = 0
     y_proche = 0
-    sens = 0
-    sens2 = 0
-    if joueur == joueur1 :
-        min = 1
-    else :
-        min = 0
         
-    for i in range(min, len(lst_x), 2) :
+    for i in range(0, len(lst_x)) :
         if x >= lst_x[i] :
-            temp.append(x - lst_x[i])
-        if x < lst_x[i] and lst_x[i] != 1000**1000 :
-            temp.append(lst_x[i] - x)
+            temp1.append(x - lst_x[i])
+        if x < lst_x[i] :
+            temp1.append(lst_x[i] - x)
         if y >= lst_y[i] :
-            temp.append(y - lst_y[i])
-        if y < lst_y[i] and lst_x[i] != 1000**1000 :
-            temp.append(lst_y[i] - y)
+            temp2.append(y - lst_y[i])
+        if y < lst_y[i] :
+            temp2.append(lst_y[i] - y)
     
-    if len(temp) > 1 :
-        x_proche = temp[0]
-        y_proche = temp[1]
-    for k in range(0, len(temp), 2) :
-        if temp[k] < x_proche :
-            x_proche = temp[k]
-        if k+1 < len(temp) :
-            if temp[k+1] < y_proche :
-                y_proche = temp[k+1]
-    
-    if x_proche-x < 0 :
-        x_proche = -(x_proche-x)
-    else :
-        x_proche = x_proche+x
-    if y_proche-y < 0 :
-        y_proche = -(y_proche-y)
-    else :
-        y_proche = y_proche+y
+    if len(temp1) > 0 :
+        indice = temp1.index(min(temp1))
+        x_proche = lst_x[indice]
+        y_proche = lst_y[indice]
+        print("x_proche :", x_proche, "| y_proche :", y_proche)
+
         
-    for j in range(0, len(temp), 2) :
-        if j+1 < len(temp) :
-            distance.append(sqrt(temp[j]**2 + temp[j+1]**2))
-    return distance, x_proche, y_proche
+    for j in range(0, len(temp1)) :
+        distance.append(sqrt(temp2[j]**2 + temp1[j]**2))
+    return distance, x_proche, y_proche, indice
+
+def calculer_aire(lst_x,lst_y,lst_rayon, joueur):
+    return
 
 def intersection(distance, rayon):
-    temp = 1
     for i in range(len(distance)):
         if distance[i] < rayon * 2:
-            temp = 0
             return True
     return False
-    
-    
-def divison_boule(x, y, x_proche, y_proche, joueur, tour, tag) :
+
+def menu_textuel(x1, y1, x2, y2, chaine='', tag='None') :
+    """
+    Affiche le texte centré par rapport au rectangle.
+
+    :param float x1: ax du rectange
+    :param float x2: bx du rectange
+    :param float y1: ay du rectange
+    :param float y2: by du rectange
+    :param str chaine: chaîne de caractère
+
+    """
+    dx = x2-x1
+    dy = y2-y1
+    ancrage = (dx-longueur_texte(chaine))/2
+    milieu_y = (dy-hauteur_texte())/2
+    texte(x1+ancrage, y1+milieu_y, chaine, 'black', 'nw', 'Purisa', 24, tag)
+
+def division_boule(x, y, x_proche, y_proche, joueur, tour, tag, indice) :
     dy = y-y_proche
     dx = x-x_proche
+    #print("dx :", dx, "| dy :", dy, "| indice :", indice, "| tag[indice] :", tag[indice])
     angle = atan2(dy, dx)
-    print("x_proche :", x_proche, "| y_proche :", y_proche, "| x :", x, "| y :", y)
-    print(angle)
+    #print("x_proche :", x_proche, "| y_proche :", y_proche, "| x :", x, "| y :", y)
+    #print(angle)
     distance = sqrt(dx**2+dy**2)
     if distance < 50 :
-        new_x = x + 50 * cos(angle)
-        new_y = y + 50 * sin(angle)
+        #if x <= x_proche and y <= y_proche :
+        new_x = (x - 50 * cos(angle))
+        new_y = (y - 50 * sin(angle))
+
         tag3, tag4 = etiquette('', tour)
-        efface(tag[-1])
         cercle(x, y, 50-distance, 'black', joueur, 1, tag3)
         cercle(new_x, new_y, 50-(50-distance), 'black', joueur, 1, tag4)
+        efface(tag[indice])
         print(new_x, new_y) 
     return
+
+def start() :
+    """
+    Affiche le menu de départ pour lancer le jeu ou le quitter lorsque celui-ci est terminé
+    """
+    cree_fenetre(largeurFenetre, hauteurFenetre)
+    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
+    x_gauche = 10
+    x_droite = 400-10
+    y_superieur = 200
+    y_inferieur = 600
+    rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey', 1, 'jouer')
+    rectangle(x_droite+x_gauche, y_superieur, (x_droite*2), y_inferieur, 'grey', 'grey', 1, 'quitter')
+    menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Jouer')
+    menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Quitter')
+    x, y, z = attente_clic()
+    print(x, y)
+    if x >= x_gauche and x <= x_droite and y >= y_superieur and y <= y_inferieur :
+        efface('jouer')
+        mise_a_jour()
+        rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'green', 'green', 1, 'jouer')
+        menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Jouer')
+        mise_a_jour()
+        sleep(0.25)
+        ferme_fenetre()
+        Jeu()
+    if x >= (x_droite+x_gauche) and x <= x_droite*2 and y >= y_superieur and y <= y_inferieur :
+        efface('quitter')
+        mise_a_jour()
+        rectangle(x_droite+x_gauche, y_superieur, (x_droite*2), y_inferieur, 'red', 'red', 1, 'quitter')
+        menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Quitter')
+        mise_a_jour()
+        sleep(0.25)
+        ferme_fenetre()
+    return
+
+def fin(n):
+    cree_fenetre(largeurFenetre, hauteurFenetre)
+    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'black', 'black')
+    x_gauche = 10
+    x_droite = 400-10
+    y_superieur = 200
+    y_inferieur = 600
+    rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey')
+    rectangle(x_droite+x_gauche, y_superieur, (x_droite*2), y_inferieur, 'grey', 'grey')
+    
+    if n == 0:
+        menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Egalité')
+    if n == 1:
+        menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Joueur1 a gagné')
+    if n == 2:
+        menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Joueur2 a gagné')
+
+    menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Merci d\'avoir joué !')
+    attente_clic()
+    ferme_fenetre()
 
 
 '''Les fonctions j1 et j2 sont des fonctions pour pouvoir attribuer des couleurs froides aléatoirement au joueur1 et des couleurs chaudes aléatoirement au joueur2.'''
@@ -123,70 +189,90 @@ def j2():
         joueur2 = lst_col[2]
     return joueur2
 
-def Victoire(distance):
-    SommeAireJ1 = 0
-    SommeAireJ2 = 0
-    res = rayon**2 * pi
-    res *= tour
-    R = rayon 
-    r = rayon 
-    d = distance
-    d1 = R**2 - r**2 + d**2
-    d2 = d - d1 
-    AireIntersection = r**2 * acos(d1/r) - d1 * sqrt(r**2 - d1**2) + R**2 * acos(d2/R) - d2 * sqrt(R**2 - d2**2)
 
 '''La fonction Jeu est le squelette de notre code pour le Jeu des Boules elle réutilise les fonctions précédentes pour pouvoir proposé un jeu fonctionnelle.'''
 
-def Jeu(rayon, tour, joueur1, joueur2):
-    cree_fenetre(500, 500)
-    lst_x = []
-    lst_y = []
+def Jeu():
+    cree_fenetre(hauteurFenetre, largeurFenetre)
     distance1 = []
     distance2 = []
-    tag = []
+    distanceO = []
+    tag1 = []
+    tag2 = []
     x_proche = 0
+    xO = 0
+    yO = 0
     y_proche = 0
+    indice = 0
+    indO = 0
+    compteur1 = 0
+    compteur2 = 0
+    obstacles(5)
     
     for i in range(tour) :
         x1, y1, z1 = attente_clic()
-        lst_x.append(x1)
-        lst_y.append(y1)
-        tag.append(etiquette(joueur1, i))
-        distance1, x_proche, y_proche = calc_distance(x1, y1, lst_x, lst_y, joueur1)
+        efface('j2')
+        menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j1')
+        mise_a_jour()
+        distance1, x_proche, y_proche, indice = calc_distance(x1, y1, lst_x2, lst_y2, joueur1)
+        distanceO, xO, yO, indO = calc_distance(x1, y1, obtx, obty, joueur1)
+        print("DistanceO :", distanceO)
         print("distance1 :", distance1)
         print()
-        if i == 0 :
-            cercle(x1, y1, rayon, 'black', joueur1, 1, tag[-1])
+        if i == 0 and intersection(distanceO, rayon) == False :
+            tag1.append(etiquette(joueur1, i))
+            cercle(x1, y1, rayon, 'black', joueur1, 1, tag1[compteur1])
+            compteur1 += 1
+            lst_x1.append(x1)
+            lst_y1.append(y1)
         else :
-            if intersection(distance1, rayon) == False :
-                cercle(x1, y1, rayon, 'black', joueur1, 1, tag)
+            if intersection(distance1, rayon) == False and intersection(distanceO, rayon) == False :
+                tag1.append(etiquette(joueur1, i))
+                cercle(x1, y1, rayon, 'black', joueur1, 1, tag1[compteur1])
+                compteur1 += 1
+                lst_x1.append(x1)
+                lst_y1.append(y1)
             else :
-                divison_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag)
-                lst_x[-1] = 1000**1000
-                lst_y[-1] = 1000**1000
+                division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
         x2, y2, z2 = attente_clic()
-        lst_x.append(x2)
-        lst_y.append(y2)
-        tag.append(etiquette(joueur2, i))
-        distance2, x_proche, y_proche = calc_distance(x2, y2, lst_x, lst_y, joueur2)
+        efface('j1')
+        menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j2')
+        mise_a_jour()
+        distance2, x_proche, y_proche, indice = calc_distance(x2, y2, lst_x1, lst_y1, joueur2)
+        distanceO, xO, yO, indO = calc_distance(x2, y2, obtx, obty, joueur2)
         print("distance2 :", distance2)
         print()
-        if intersection(distance2, rayon) == False :
-            cercle(x2, y2, rayon, 'black', joueur2, 1, tag[-1])
+        if intersection(distance2, rayon) == False and intersection(distanceO, rayon) == False :
+            tag2.append(etiquette(joueur2, i))
+            cercle(x2, y2, rayon, 'black', joueur2, 1, tag2[compteur2])
+            compteur2 += 1
+            lst_x2.append(x2)
+            lst_y2.append(y2)
         else :
-            divison_boule(x2, y2, x_proche, y_proche, joueur1, tour, tag)
-            lst_x[-1] = 1000**1000
-            lst_y[-1] = 1000**1000
+            division_boule(x2, y2, x_proche, y_proche, joueur1, tour, tag1, indice)
         mise_a_jour()
     
     attente_clic()
     ferme_fenetre()
-
+    if len(tag1) > len(tag2) :
+        fin(1)
+    elif len(tag2) > len(tag1) :
+        fin(2)
+    else :
+        fin(0)
 #-----main-----
 
 if __name__ == '__main__':
     joueur1 = j1() # Variables qu'on a besoin de généralisé dans le code
     joueur2 = j2()
+    lst_x1 = []
+    lst_y1 = []
+    lst_x2 = []
+    lst_y2 = []
+    obtx = []
+    obty = []
     tour = 5
     rayon = 50
-    Jeu(rayon, tour, joueur1, joueur2)
+    largeurFenetre = 1000
+    hauteurFenetre = 1000
+    start()
