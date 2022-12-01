@@ -93,19 +93,24 @@ def menu_textuel(x1, y1, x2, y2, chaine='', tag='None') :
 def division_boule(x, y, x_proche, y_proche, joueur, tour, tag, indice) :
     dy = y-y_proche
     dx = x-x_proche
+    element = 0
+    if joueur == joueur1 :
+        element = 0
+    else :
+        element = 1
     #print("dx :", dx, "| dy :", dy, "| indice :", indice, "| tag[indice] :", tag[indice])
     angle = atan2(dy, dx)
     #print("x_proche :", x_proche, "| y_proche :", y_proche, "| x :", x, "| y :", y)
     #print(angle)
     distance = sqrt(dx**2+dy**2)
-    if distance < 50 :
+    if distance < rayon[element] :
         #if x <= x_proche and y <= y_proche :
-        new_x = (x - 50 * cos(angle))
-        new_y = (y - 50 * sin(angle))
+        new_x = (x - rayon[element] * cos(angle))
+        new_y = (y - rayon[element] * sin(angle))
 
         tag3, tag4 = etiquette('', tour)
-        cercle(x, y, 50-distance, 'black', joueur, 1, tag3)
-        cercle(new_x, new_y, 50-(50-distance), 'black', joueur, 1, tag4)
+        cercle(x, y, rayon[element]-distance, 'black', joueur, 1, tag3)
+        cercle(new_x, new_y, rayon[element]-(rayon[element]-distance), 'black', joueur, 1, tag4)
         efface(tag[indice])
         print(new_x, new_y) 
     return
@@ -126,8 +131,8 @@ def start() :
     rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey', 1, 'jouer')
     rectangle(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'grey', 'grey', 1, 'quitter')
     rectangle(largeurFenetre*0.75, y_superieur*4.4, x_droite//2, y_superieur*4.6, 'orange', 'red', 1, 'leg')
-    cercle(largeurFenetre*0.75, y_superieur//2, rayon, 'orange', 'red', 1, 'Jeux1')
-    cercle(25*x_gauche, y_superieur//2, rayon, 'orange', 'red', 1, 'Jeux2')
+    cercle(largeurFenetre*0.75, y_superieur//2, 50, 'orange', 'red', 1, 'Jeux1')
+    cercle(25*x_gauche, y_superieur//2, 50, 'orange', 'red', 1, 'Jeux2')
     menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'Jeux de boules')
     menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Jouer')
     menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Quitter')
@@ -170,8 +175,8 @@ def fin(n):
     rectangle(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'red', 'red', 1, 'Joué')
     rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'grey', 'grey')
     rectangle(x_droite+x_gauche, y_superieur, (x_droite*2), y_inferieur, 'grey', 'grey')
-    cercle(largeurFenetre*0.75, y_superieur//2.5, rayon, 'orange', 'red', 1, 'Jeux3')
-    cercle(25*x_gauche, y_superieur//2.5, rayon, 'orange', 'red', 1, 'Jeux4')
+    cercle(largeurFenetre*0.75, y_superieur//2.5, 50, 'orange', 'red', 1, 'Jeux3')
+    cercle(25*x_gauche, y_superieur//2.5, 50, 'orange', 'red', 1, 'Jeux4')
     menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'Merci d\'avoir joué !')
     
     if n == 0:
@@ -241,50 +246,50 @@ def Jeu(rayon):
         efface('j2')
         menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j1')
         mise_a_jour()
-        distance1, x_proche, y_proche, indice = calc_distance(x1, y1, lst_x2, lst_y2, joueur1)
+        distance1, x_proche, y_proche, indice = calc_distance(x1, y1, lst_x[1], lst_y[1], joueur1)
         distanceO, xO, yO, indO = calc_distance(x1, y1, obtx, obty, joueur1) #variante obstacles
         print("DistanceO :", distanceO)
         print("distance1 :", distance1)
         print()
         if etat_taille[0] == True :
-            rayon = taille_des_boules(1)
+            rayon[0] = taille_des_boules(1)
             efface('budget_j2')
             menu_textuel(largeurFenetre-55, 15, largeurFenetre-55, 15, "Il vous reste :"+str(budget[1]), 'budget_j1')
             mise_a_jour()
-        if i == 0 and intersection(distanceO, rayon) == False :
+        if i == 0 and intersection(distanceO, rayon[1]) == False :
             tag1.append(etiquette(joueur1, i))
-            cercle(x1, y1, rayon, 'black', joueur1, 1, tag1[compteur1])
+            cercle(x1, y1, rayon[0], 'black', joueur1, 1, tag1[compteur1])
             compteur1 += 1
-            lst_x1.append(x1)
-            lst_y1.append(y1)
+            lst_x[0].append(x1)
+            lst_y[0].append(y1)
         else :
-            if intersection(distance1, rayon) == False and intersection(distanceO, rayon) == False : 
+            if intersection(distance1, rayon[1]) == False and intersection(distanceO, rayon[0]) == False : 
                 tag1.append(etiquette(joueur1, i))
-                cercle(x1, y1, rayon, 'black', joueur1, 1, tag1[compteur1])
+                cercle(x1, y1, rayon[0], 'black', joueur1, 1, tag1[compteur1])
                 compteur1 += 1
-                lst_x1.append(x1)
-                lst_y1.append(y1)
+                lst_x[0].append(x1)
+                lst_y[0].append(y1)
             else :
                 division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
         x2, y2, z2 = attente_clic()
         efface('j1')
         menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j2')
         mise_a_jour()
-        distance2, x_proche, y_proche, indice = calc_distance(x2, y2, lst_x1, lst_y1, joueur2)
+        distance2, x_proche, y_proche, indice = calc_distance(x2, y2, lst_x[0], lst_y[0], joueur2)
         distanceO, xO, yO, indO = calc_distance(x2, y2, obtx, obty, joueur2) #variante obstacles
         print("distance2 :", distance2)
         print()
         if etat_taille[0] == True :
-            rayon = taille_des_boules(2)
+            rayon[1] = taille_des_boules(2)
             efface('budget_j1')
             menu_textuel(largeurFenetre-55, 15, largeurFenetre-55, 15, "Il vous reste :"+str(budget[2]), 'budget_j2')
             mise_a_jour()
-        if intersection(distance2, rayon) == False and intersection(distanceO, rayon) == False :
+        if intersection(distance2, rayon[0]) == False and intersection(distanceO, rayon[1]) == False :
             tag2.append(etiquette(joueur2, i))
-            cercle(x2, y2, rayon, 'black', joueur2, 1, tag2[compteur2])
+            cercle(x2, y2, rayon[1], 'black', joueur2, 1, tag2[compteur2])
             compteur2 += 1
-            lst_x2.append(x2)
-            lst_y2.append(y2)
+            lst_x[1].append(x2)
+            lst_y[1].append(y2)
         else :
             division_boule(x2, y2, x_proche, y_proche, joueur1, tour, tag1, indice)
         mise_a_jour()
@@ -319,8 +324,8 @@ def menu_variante(etat_taille, etat_obt):
     rectangle(largeurFenetre*0.75, y_superieur*4.4, x_droite//2, y_superieur*4.6, 'orange', 'red', 1, 'leg')
     rectangle(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'orange', 'red', 1, 'Jeux')
     rectangle(largeurFenetre*0.75, y_superieur*4.4, x_droite//2, y_superieur*4.6, 'orange', 'red', 1, 'leg2')
-    cercle(largeurFenetre*0.75, y_superieur//2, rayon, 'orange', 'red', 1, 'Jeux3')
-    cercle(25*x_gauche, y_superieur//2, rayon, 'orange', 'red', 1, 'Jeux4')
+    cercle(largeurFenetre*0.75, y_superieur//2, 50, 'orange', 'red', 1, 'Jeux3')
+    cercle(25*x_gauche, y_superieur//2, 50, 'orange', 'red', 1, 'Jeux4')
     
     # Textes options
     menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Taille Boules')
@@ -373,9 +378,9 @@ def affichage(temps, couleur):
 def obstacles(nombre) :
     '''Fonctions pour la variante obstacles'''
     for i in range(nombre) :
-        x = randint(rayon, 1000-rayon)
-        y = randint(rayon, 1000-rayon)
-        cercle(x, y, rayon, 'black', 'grey', 1, "obstacle")
+        x = randint(50, 1000-50)
+        y = randint(50, 1000-50)
+        cercle(x, y, 50, 'black', 'grey', 1, "obstacle")
         obtx.append(x)
         obty.append(y)
 
@@ -412,14 +417,12 @@ def taille_des_boules(joueur) :
 if __name__ == '__main__':
     joueur1 = j1() # Variables qu'on a besoin de généralisé dans le code
     joueur2 = j2()
-    lst_x1 = []
-    lst_y1 = []
-    lst_x2 = []
-    lst_y2 = []
+    lst_x = [[], []]
+    lst_y = [[], []]
     obtx = []
     obty = []
     tour = 5
-    rayon = 50
+    rayon = [50, 50, 50]
     largeurFenetre = 1000
     hauteurFenetre = 1000
     budget = [0, 200, 200]
