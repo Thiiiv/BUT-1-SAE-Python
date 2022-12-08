@@ -1,10 +1,9 @@
 #-----Imports-----
-
 import string
 from upemtk import *
 from random import randint
-from time import *
-from math import pi, sqrt, atan2, acos, cos, sin
+from time import sleep, time
+from math import sqrt, atan2, acos, pi, cos, sin
 
 #-----Fonctions-----
 
@@ -24,7 +23,7 @@ def etiquette(joueur, tour) :
 
 
 def calc_distance(x, y, lst_x, lst_y, joueur) :
-    '''Cette fonction calcule la distance entre 2 centre de cercles'''
+    '''Cette fonction calcule la distance entre 2 centre de cerlces'''
     distance = []
     temp1 = []
     temp2 = []
@@ -48,10 +47,10 @@ def calc_distance(x, y, lst_x, lst_y, joueur) :
         y_proche = lst_y[indice]
         print("x_proche :", x_proche, "| y_proche :", y_proche)
 
+        
     for j in range(0, len(temp1)) :
         distance.append(sqrt(temp2[j]**2 + temp1[j]**2))
     return distance, x_proche, y_proche, indice
-
 
 def calculer_aire(lst_x, lst_y, lst_rayon, joueur):
     lst_pi = []
@@ -61,31 +60,32 @@ def calculer_aire(lst_x, lst_y, lst_rayon, joueur):
         element = 1
     
     for c in range(len(lst_x[element])):
-        for i in range(lst_x[element][c] - rayon[joueur], lst_x[element][c] + rayon[joueur]):# lst_rayon[c] au lieu de rayon
-            for j in range(lst_y[element][c] - rayon[joueur], lst_y[element][c] + rayon[joueur]):
-                if sqrt((i - lst_x[element][c])**2 + (j - lst_y[element][c])**2) <= rayon[joueur]:
+        for i in range(int(lst_x[element][c] - lst_rayon[joueur][c]), int(lst_x[element][c] + lst_rayon[joueur][c])):# lst_rayon[c] au lieu de rayon
+            for j in range(int(lst_y[element][c] - lst_rayon[joueur][c]), int(lst_y[element][c] + lst_rayon[joueur][c])):
+                if sqrt((i - lst_x[element][c])**2 + (j - lst_y[element][c])**2) <= lst_rayon[joueur][c]:
                     lst_pi.append((i, j))
     score = len(set(lst_pi))
     return score
 
-    
 def intersection(distance, rayon):
-    for i in range(len(distance)):
-        if distance[i] < rayon * 2:
-            return True
+    if type(rayon) != list :
+        for i in range(len(distance)):
+            if distance[i] < rayon * 2:
+                return True
+    else :
+        for i in range(len(distance)):
+            if distance[i] < rayon[i] * 2:
+                return True
     return False
-
 
 def menu_textuel(x1, y1, x2, y2, chaine='', tag='None') :
     """
     Affiche le texte centré par rapport au rectangle.
-
     :param float x1: ax du rectange
     :param float x2: bx du rectange
     :param float y1: ay du rectange
     :param float y2: by du rectange
     :param str chaine: chaîne de caractère
-
     """
     dx = x2-x1
     dy = y2-y1
@@ -116,30 +116,35 @@ def division_boule(x, y, x_proche, y_proche, joueur, tour, tag, indice) :
         element = 0
     else :
         element = 1
+
     #print("dx :", dx, "| dy :", dy, "| indice :", indice, "| tag[indice] :", tag[indice])
     angle = atan2(dy, dx)
     #print("x_proche :", x_proche, "| y_proche :", y_proche, "| x :", x, "| y :", y)
     #print(angle)
     distance = sqrt(dx**2+dy**2)
-    if distance < rayon[joueur] :
+    if distance < lst_rayon[joueur][indice] :
         #if x <= x_proche and y <= y_proche :
-        new_x = (x - rayon[joueur] * cos(angle))
-        new_y = (y - rayon[joueur] * sin(angle))
+        new_x = (x - lst_rayon[joueur][indice] * cos(angle))
+        new_y = (y - lst_rayon[joueur][indice] * sin(angle))
 
         tag3, tag4 = etiquette('', tour)
-        cercle(x, y, rayon[joueur]-distance, 'black', joueur, 1, tag3)
-        cercle(new_x, new_y, rayon[joueur]-(rayon[joueur]-distance), 'black', joueur, 1, tag4)
+        cercle(x, y, lst_rayon[joueur][indice]-distance, 'black', joueur, 1, tag3)
+        cercle(new_x, new_y, lst_rayon[joueur][indice]-(lst_rayon[joueur][indice]-distance), 'black', joueur, 1, tag4)
+        lst_rayon[joueur].append(lst_rayon[joueur][indice]-distance)
+        lst_rayon[joueur].append(lst_rayon[joueur][indice]-(lst_rayon[joueur][indice]-distance))
+        lst_rayon[joueur].pop(indice)
+        lst_x[element].remove(x_proche)
+        lst_y[element].remove(y_proche)
+        lst_x[element].append(x)
+        lst_y[element].append(y)
+        lst_x[element].append(new_x)
+        lst_y[element].append(new_y)
         efface(tag[indice])
-        #print(new_x, new_y) 
+        print(tag[indice])
         tag.pop(indice)
         tag.append(tag3)
         tag.append(tag4)
-        '''lst_x[element].pop(x_proche)
-        lst_y[element].pop(y_proche)
-        lst_x[element].append(x)
-        lst_x[element].append(new_x)
-        lst_y[element].append(y)
-        lst_x[element].append(new_y)'''
+        print(new_x, new_y) 
     return
 
 
@@ -175,8 +180,8 @@ def start(tour) :
         mise_a_jour()
         sleep(0.25)
         ferme_fenetre()
-        #menu_variante(etat_taille, etat_obt)
-        #ferme_fenetre()
+        menu_variante(etat_taille, etat_obt)
+        ferme_fenetre()
         Jeu(rayon, tour)
     if x >= (x_droite+x_gauche) and x <= x_droite*2 and y >= y_superieur and y <= y_inferieur :
         efface('quitter')
@@ -187,7 +192,6 @@ def start(tour) :
         sleep(0.25)
         ferme_fenetre()
     return
-
 
 def fin():
     """
@@ -222,6 +226,7 @@ def fin():
     ferme_fenetre()
 
 
+
 def j1():
     '''Les fonctions j1 et j2 sont des fonctions pour pouvoir attribuer des couleurs froides 
     aléatoirement au joueur1 et des couleurs chaudes aléatoirement au joueur2.'''
@@ -249,6 +254,7 @@ def j2():
     return joueur2
 
 
+
 def Jeu(rayon, tour):
     '''La fonction Jeu est le squelette de notre code pour le Jeu des 
     Boules elle réutilise les fonctions précédentes pour pouvoir proposé un jeu fonctionnelle.'''
@@ -272,16 +278,23 @@ def Jeu(rayon, tour):
     obstacles(randint(1, 5)) #variante obstacles
     menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j1')
     mise_a_jour()
+    etat_terminaison = False
     while i < tour:
         
         evenement = attente_clic_ou_touche()
+        print(evenement)
         if evenement[2] == 'Touche':
             if evenement[1] == 't':
-                i = terminaison(tour,i)
+                if etat_terminaison == False :
+                    i = terminaison(tour,i)
+                    etat_terminaison = True
+                evenement = attente_clic_ou_touche()
             if evenement[1] == 's':
                 score()
-
-        elif 'Clic' in evenement[2]:
+                evenement = attente_clic_ou_touche()
+            
+                
+        if 'Clic' in evenement[2] :
             x1, y1, z1 = evenement
             efface('j1')
             menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j2')
@@ -291,36 +304,50 @@ def Jeu(rayon, tour):
             print("DistanceO :", distanceO)
             print("distance1 :", distance1)
             print()
-            '''
-            if etat_taille[0] == True :
+            
+            """if etat_taille[0] == True :
                 rayon[0] = taille_des_boules(1)
                 efface('budget_j2')
-                menu_textuel(largeurFenetre-55, 15, largeurFenetre-55, 15, tIl vous reste :"+str(budget[1]), 'budget_j1')
-                mise_a_jour()'''
-            if i == 0 and intersection(distanceO, rayon[joueur2]) == False :
-                tag1.append(etiquette(joueur1, i))
-                cercle(x1, y1, rayon[joueur1], 'black', joueur1, 1, tag1[compteur1])
+                menu_textuel(largeurFenetre-55, 15, largeurFenetre-55, 15, 'Il vous reste :'+str(budget[1]), 'budget_j1')
+                mise_a_jour()"""
+            lst_rayon[joueur1].append(rayon[joueur1])
+            if i == 0 and intersection(distanceO, lst_rayon[joueur1][-1]) == False :
+                tag = etiquette(joueur1, i)
+                tag1.append(tag)
+                cercle(x1, y1, rayon[joueur1], 'black', joueur1, 1, tag)
+                print(tag)
+                coordonnees[tag] = set()
+                coordonnees[tag].add((x1, y1))
                 compteur1 += 1
                 lst_x[0].append(x1)
                 lst_y[0].append(y1)
             else :
-                if intersection(distance1, rayon[joueur2]) == False and intersection(distanceO, rayon[joueur1]) == False : 
-                    tag1.append(etiquette(joueur1, i))
-                    cercle(x1, y1, rayon[joueur1], 'black', joueur1, 1, tag1[compteur1])
+                if intersection(distance1, lst_rayon[joueur2][-1]) == False and intersection(distanceO, lst_rayon[joueur1][-1]) == False : 
+                    tag = etiquette(joueur1, i)
+                    tag1.append(tag)
+                    cercle(x1, y1, lst_rayon[joueur1][-1], 'black', joueur1, 1, tag)
+                    print(tag)
+                    coordonnees[tag] = (x1, y1)
                     compteur1 += 1
                     lst_x[0].append(x1)
                     lst_y[0].append(y1)
                 else :
                     division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
         
-        evenement = attente_clic_ou_touche()
+        evenement=attente_clic_ou_touche()
+        print(evenement)
         if evenement[2]=='Touche':
             if evenement[1] == 't':
-                i = terminaison(tour,i)
+                if etat_terminaison == False :
+                    i = terminaison(tour,i)
+                    etat_terminaison = True
+                evenement = attente_clic_ou_touche()
             if evenement[1] == 's':
                 score()
-
-        if 'Clic' in evenement[2]:
+                evenement = attente_clic_ou_touche()
+            i = i-1
+                  
+        if 'Clic' in evenement[2] :
             x2, y2, z2 = evenement
             efface('j2')
             menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j1')
@@ -329,29 +356,40 @@ def Jeu(rayon, tour):
             distanceO, xO, yO, indO = calc_distance(x2, y2, obtx, obty, joueur2) #variante obstacles
             print("distance2 :", distance2)
             print()
-            '''
-            if etat_taille[0] == True :
+            
+            """if etat_taille[0] == True :
                 rayon[1] = taille_des_boules(2)
                 efface('budget_j1')
                 menu_textuel(largeurFenetre-55, 15, largeurFenetre-55, 15, "Il vous reste :"+str(budget[2]), 'budget_j2')
-                mise_a_jour()'''
-            if intersection(distance2, rayon[joueur1]) == False and intersection(distanceO, rayon[joueur1]) == False :
-                tag2.append(etiquette(joueur2, i))
-                cercle(x2, y2, rayon[joueur1], 'black', joueur2, 1, tag2[compteur2])
+                mise_a_jour()"""
+            lst_rayon[joueur2].append(rayon[joueur2])
+            if intersection(distance2, lst_rayon[joueur1][-1]) == False and intersection(distanceO, lst_rayon[joueur2][-1]) == False :
+                tag = etiquette(joueur2, i)
+                tag2.append(tag)
+                cercle(x2, y2, lst_rayon[joueur2][-1], 'black', joueur2, 1, tag)
+                print(tag)
+                coordonnees[tag] = (x2, y2)
                 compteur2 += 1
                 lst_x[1].append(x2)
                 lst_y[1].append(y2)
             else :
                 division_boule(x2, y2, x_proche, y_proche, joueur1, tour, tag1, indice)
             mise_a_jour()
+            dynamique(lst_x, lst_y, lst_rayon, tag1, tag2)
+            mise_a_jour()
         i += 1
-    
+    print(coordonnees)
     attente_clic()
     ferme_fenetre()
-    fin()
+    if len(tag1) > len(tag2) :
+        fin(1)
+    elif len(tag2) > len(tag1) :
+        fin(2)
+    else :
+        fin(0)
 
 #-----Variantes-----
-'''
+
 def menu_variante(etat_taille, etat_obt):
     cree_fenetre(largeurFenetre, hauteurFenetre)
     rectangle(0, hauteurFenetre, largeurFenetre, 0, 'orange', 'orange')
@@ -410,14 +448,13 @@ def menu_variante(etat_taille, etat_obt):
         
         if x >= x_gauche and x <= x_droite and y >= (y_superieur*3)+10 and y <= y_superieur*4 :
             return
-'''
+
 def sablier():
     '''Fonctions pour la variante sablier'''
     t1 = time() + 20 if sablier else None
     while t1 is None or time() < t1:
         ev = donne_evenement() 
         typeEv = type_evenement(ev)
-    pass
 
 def affichage(temps, couleur):
     efface('timer')
@@ -431,6 +468,7 @@ def obstacles(nombre) :
         cercle(x, y, 50, 'black', 'grey', 1, "obstacle")
         obtx.append(x)
         obty.append(y)
+    return
 
 def terminaison(tour,i):
     rectangle(0, hauteurFenetre//4, largeurFenetre//2, 0, 'orange', 'orange', tag='term1')
@@ -441,6 +479,19 @@ def terminaison(tour,i):
     efface('term1')
     i = tour-5
     return i 
+
+def score():
+    rectangle(0, hauteurFenetre//4, largeurFenetre//2, 0, 'orange', 'orange', tag='scor')
+    rectangle(5, hauteurFenetre//4-5, largeurFenetre//2-5, 5, 'black', 'black', tag='scor')
+    menu_textuel(0, hauteurFenetre//6-5, largeurFenetre//2-5, 0, 'Score des joueurs:', tag='scor')
+    menu_textuel(0, hauteurFenetre//4-5, largeurFenetre//2-5, 0, calculer_aire(lst_x, lst_y, lst_rayon, joueur1), tag='scor1')
+    menu_textuel(0, hauteurFenetre//3-5, largeurFenetre//2-5, 0, calculer_aire(lst_x, lst_y, lst_rayon, joueur2), tag='scor2')
+    mise_a_jour()
+    sleep(2)
+    efface('scor')
+    efface('scor1')
+    efface('scor2')
+    return
 
 def taille_des_boules(joueur) :
     rayon = ''
@@ -457,20 +508,30 @@ def taille_des_boules(joueur) :
     else :
         return 0 
 
-def score():
-    rectangle(0, hauteurFenetre//4, largeurFenetre//2, 0, 'orange', 'orange', tag='scor')
-    rectangle(5, hauteurFenetre//4-5, largeurFenetre//2-5, 5, 'black', 'black', tag='scor')
-    menu_textuel(0, hauteurFenetre//6-5, largeurFenetre//2-5, 0, 'Score des joueurs:', tag='scor')
-    menu_textuel(0, hauteurFenetre//4-5, largeurFenetre//2-5, 0, calculer_aire(lst_x, lst_y, rayon, joueur1), tag='scor1')
-    menu_textuel(0, hauteurFenetre//3-5, largeurFenetre//2-5, 0, calculer_aire(lst_x, lst_y, rayon, joueur2), tag='scor2')
-    mise_a_jour()
-    sleep(2)
-    efface('scor')
-    efface('scor1')
-    efface('scor2')
-    pass
-
-#-----Main-----
+def dynamique(lst_x, lst_y, lst_rayon, tag_j1, tag_j2) :
+    x1, y1, x2, y2, indice = 0, 0, 0, 0, 0
+    distance1 = []
+    distance2 = []
+    
+    for k in range(len(tag_j1)) :
+        lst_rayon[joueur1][k] += 10
+    
+    for k in range(len(tag_j2)) :
+        lst_rayon[joueur2][k] += 10
+        
+    for i in range(len(tag_j1)) :
+        distance1, x1, y1, indice = calc_distance(lst_x[0][i], lst_y[0][i], lst_x[1], lst_y[1], joueur1)
+        if intersection(distance1, lst_rayon[joueur1][i]) == False :
+            efface(tag_j1[i])
+            cercle(lst_x[0][i], lst_y[0][i], lst_rayon[joueur1][i], 'black', joueur1, 1, tag_j1[i])
+        
+    for i in range(len(tag_j2)) :
+        distance2, x2, y2, indice = calc_distance(lst_x[1][i], lst_y[1][i], lst_x[0], lst_y[0], joueur2)
+        if intersection(distance2, lst_rayon[joueur2][i]) == False :
+            efface(tag_j2[i])
+            cercle(lst_x[1][i], lst_y[1][i], lst_rayon[joueur2][i], 'black', joueur2, 1, tag_j2[i])
+    return
+    
 
 if __name__ == '__main__':
     joueur1 = j1() # Variables qu'on a besoin de généralisé dans le code
@@ -479,12 +540,14 @@ if __name__ == '__main__':
     lst_y = [[], []]
     obtx = []
     obty = []
-    tour = 20
+    tour = 15
     rayon = {'obstacle' : 50, joueur1 : 50, joueur2 : 50}
-    lst_rayon = {joueur1 : [], joueur2 : []}
     largeurFenetre = 1000
     hauteurFenetre = 1000
     etat_taille = [False]
     etat_obt = [False]
     budget = {joueur1 : 200, joueur2 : 200}
+    coordonnees = dict()
+    lst_rayon = {joueur1 : [], joueur2 : []}
+    variante = {'taille_des_boules' : False, 'obstacle' : False, 'terminaison' : False, 'score' : False, 'dynamique' : False, 'sablier' : False}
     start(tour)
