@@ -274,13 +274,10 @@ def Jeu(rayon, tour):
     tag1 = []
     tag2 = []
     x_proche = 0
-    xO = 0
-    yO = 0
     y_proche = 0
     indice = 0
-    indO = 0
-    compteur1 = 0
-    compteur2 = 0
+    #compteur1 = 0
+    #compteur2 = 0
     i = 0
     if variante['obstacles'] == True :
         obstacles(randint(1, 5)) #variante obstacles
@@ -330,31 +327,58 @@ def Jeu(rayon, tour):
                 rayon[joueur1] = taille_des_boules(joueur1)
             if rayon[joueur1] != 0 :
                 distance1, x_proche, y_proche, indice = calc_distance(x1, y1, lst_x[1], lst_y[1], joueur1)
-                distanceO = calc_distance(x1, y1, lst_x[2], lst_y[2], joueur1)[0] 
+                if variante['obstacles'] == True :
+                    distanceO = calc_distance(x1, y1, lst_x[2], lst_y[2], joueur1)[0] 
                 lst_rayon[joueur1].append(rayon[joueur1])
-                if i == 0 and intersection(distanceO, lst_rayon[joueur1][-1]) == False :
-                    tag = etiquette(joueur1, i)
-                    tag1.append(tag)
-                    cercle(x1, y1, rayon[joueur1], 'black', joueur1, 1, tag)
-                    #print(tag)
-                    coordonnees[tag] = set()
-                    coordonnees[tag].add((x1, y1))
-                    compteur1 += 1
-                    lst_x[0].append(x1)
-                    lst_y[0].append(y1)
-                else :
-                    if intersection(distance1, lst_rayon[joueur1][-1]) == False and intersection(distanceO, lst_rayon[joueur1][-1]) == False : 
+                if variante['obstacles'] == True :
+                    if i == 0 and intersection(distanceO, lst_rayon[joueur1][-1]) == False :
                         tag = etiquette(joueur1, i)
                         tag1.append(tag)
-                        cercle(x1, y1, lst_rayon[joueur1][-1], 'black', joueur1, 1, tag)
+                        cercle(x1, y1, rayon[joueur1], 'black', joueur1, 1, tag)
                         #print(tag)
-                        coordonnees[tag] = (x1, y1)
-                        compteur1 += 1
+                        #coordonnees[tag] = set()
+                        #coordonnees[tag].add((x1, y1))
+                        #compteur1 += 1
                         lst_x[0].append(x1)
                         lst_y[0].append(y1)
                     else :
-                        division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
-                        #print("tag2 :", tag2)
+                        if intersection(distance1, lst_rayon[joueur1][-1]) == False and intersection(distanceO, lst_rayon[joueur1][-1]) == False : 
+                            tag = etiquette(joueur1, i)
+                            tag1.append(tag)
+                            cercle(x1, y1, lst_rayon[joueur1][-1], 'black', joueur1, 1, tag)
+                            #print(tag)
+                            #coordonnees[tag] = (x1, y1)
+                            #compteur1 += 1
+                            lst_x[0].append(x1)
+                            lst_y[0].append(y1)
+                        else :
+                            if len(lst_rayon[joueur1]) > 0 :
+                                division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
+                                #print("tag2 :", tag2)
+                else :
+                    if i == 0 and intersection(distanceO, lst_rayon[joueur1][-1]) == False :
+                        tag = etiquette(joueur1, i)
+                        tag1.append(tag)
+                        cercle(x1, y1, rayon[joueur1], 'black', joueur1, 1, tag)
+                        #print(tag)
+                        #coordonnees[tag] = set()
+                        #coordonnees[tag].add((x1, y1))
+                        #compteur1 += 1
+                        lst_x[0].append(x1)
+                        lst_y[0].append(y1)
+                    else :
+                        if intersection(distance1, lst_rayon[joueur1][-1]) == False : 
+                            tag = etiquette(joueur1, i)
+                            tag1.append(tag)
+                            cercle(x1, y1, lst_rayon[joueur1][-1], 'black', joueur1, 1, tag)
+                            #print(tag)
+                            #coordonnees[tag] = (x1, y1)
+                            #compteur1 += 1
+                            lst_x[0].append(x1)
+                            lst_y[0].append(y1)
+                        else :
+                            division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
+                            #print("tag2 :", tag2)
         
         if variante['terminaison'] == True or variante['score'] == True :
             evenement = attente_clic_ou_touche()
@@ -397,20 +421,36 @@ def Jeu(rayon, tour):
                 rayon[joueur2] = taille_des_boules(joueur2)
             if rayon[joueur2] != 0 :
                 distance2, x_proche, y_proche, indice = calc_distance(x2, y2, lst_x[0], lst_y[0], joueur2)
-                distanceO = calc_distance(x2, y2, lst_x[2], lst_y[2], joueur2)[0]
+                if variante['obstacles'] == True :
+                    distanceO = calc_distance(x2, y2, lst_x[2], lst_y[2], joueur2)[0]
                 lst_rayon[joueur2].append(rayon[joueur2])
-                if intersection(distance2, lst_rayon[joueur2][-1]) == False and intersection(distanceO, lst_rayon[joueur2][-1]) == False :
-                    tag = etiquette(joueur2, i)
-                    tag2.append(tag)
-                    cercle(x2, y2, lst_rayon[joueur2][-1], 'black', joueur2, 1, tag)
-                    #print(tag)
-                    coordonnees[tag] = (x2, y2)
-                    compteur2 += 1
-                    lst_x[1].append(x2)
-                    lst_y[1].append(y2)
+                if variante['obstacles'] == True :
+                    if intersection(distance2, lst_rayon[joueur2][-1]) == False and intersection(distanceO, lst_rayon[joueur2][-1]) == False :
+                        tag = etiquette(joueur2, i)
+                        tag2.append(tag)
+                        cercle(x2, y2, lst_rayon[joueur2][-1], 'black', joueur2, 1, tag)
+                        #print(tag)
+                        #coordonnees[tag] = (x2, y2)
+                        #compteur2 += 1
+                        lst_x[1].append(x2)
+                        lst_y[1].append(y2)
+                    else :
+                        division_boule(x2, y2, x_proche, y_proche, joueur1, tour, tag1, indice)
+                        #print("tag1 :", tag1)
                 else :
-                    division_boule(x2, y2, x_proche, y_proche, joueur1, tour, tag1, indice)
-                    #print("tag1 :", tag1)
+                    if intersection(distance2, lst_rayon[joueur2][-1]) == False :
+                        tag = etiquette(joueur2, i)
+                        tag2.append(tag)
+                        cercle(x2, y2, lst_rayon[joueur2][-1], 'black', joueur2, 1, tag)
+                        #print(tag)
+                        #coordonnees[tag] = (x2, y2)
+                        #compteur2 += 1
+                        lst_x[1].append(x2)
+                        lst_y[1].append(y2)
+                    else :
+                        if len(lst_rayon[joueur1]) > 0 :
+                            division_boule(x2, y2, x_proche, y_proche, joueur1, tour, tag1, indice)
+                            #print("tag1 :", tag1)
             mise_a_jour()
         #print("tag1 :", tag1)
         #print("tag2 :", tag2)
@@ -607,6 +647,7 @@ def dynamique(lst_x, lst_y, lst_rayon, tag_j1, tag_j2) :
         efface(tag_j1[i])
         lst_rayon[joueur1][i] *= 1.04
         distance1 = calc_distance(lst_x[0][i], lst_y[0][i], lst_x[1], lst_y[1], joueur1)[0]
+        print(lst_x[2])
         if len(lst_x[2]) > 0 :
             distance_obt = calc_distance(lst_x[0][i], lst_y[0][i], lst_x[2], lst_y[2], joueur1)[0]
             if intersection(distance1, lst_rayon[joueur1][i]) == False and intersection(distance_obt, lst_rayon[joueur1][i]) == False :
@@ -623,6 +664,7 @@ def dynamique(lst_x, lst_y, lst_rayon, tag_j1, tag_j2) :
         efface(tag_j2[k])
         lst_rayon[joueur2][k] *= 1.04
         distance2 = calc_distance(lst_x[1][k], lst_y[1][k], lst_x[0], lst_y[0], joueur2)[0]
+        print(lst_x[2])
         if len(lst_x[2]) > 0 :
             distance_obt = calc_distance(lst_x[0][k], lst_y[0][k], lst_x[2], lst_y[2], joueur2)[0]
             if intersection(distance2, lst_rayon[joueur2][k]) == False and intersection(distance_obt, lst_rayon[joueur2][k]) == False :
@@ -646,10 +688,8 @@ if __name__ == '__main__':
     rayon = {'obstacle' : 50, joueur1 : 50, joueur2 : 50}
     largeurFenetre = 1000
     hauteurFenetre = 1000
-    etat_taille = [False]
-    etat_obt = [False]
     budget = {joueur1 : 500, joueur2 : 500}
-    coordonnees = dict()
+    #coordonnees = dict()
     lst_rayon = {joueur1 : [], joueur2 : []}
     variante = {'taille_des_boules' : False, 'obstacles' : False, 'terminaison' : False, 'score' : False, 'dynamique' : False, 'sablier' : False}
     start(tour)
