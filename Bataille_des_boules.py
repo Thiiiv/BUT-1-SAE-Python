@@ -61,9 +61,9 @@ def calculer_aire(lst_x, lst_y, lst_rayon, joueur):
         element = 1
     
     for c in range(len(lst_x[element])):
-        for i in range(lst_x[element][c] - rayon[element], lst_x[element][c] + rayon[element]):# lst_rayon[c] au lieu de rayon
-            for j in range(lst_y[element][c] - rayon[element], lst_y[element][c] + rayon[element]):
-                if sqrt((i - lst_x[element][c])**2 + (j - lst_y[element][c])**2) <= rayon[element]:
+        for i in range(lst_x[element][c] - rayon[joueur], lst_x[element][c] + rayon[joueur]):# lst_rayon[c] au lieu de rayon
+            for j in range(lst_y[element][c] - rayon[joueur], lst_y[element][c] + rayon[joueur]):
+                if sqrt((i - lst_x[element][c])**2 + (j - lst_y[element][c])**2) <= rayon[joueur]:
                     lst_pi.append((i, j))
     score = len(set(lst_pi))
     return score
@@ -92,9 +92,9 @@ def menu_textuel(x1, y1, x2, y2, chaine='', tag='None') :
     ancrage = (dx-longueur_texte(chaine))/2
     milieu_y = (dy-hauteur_texte())/2
     texte(x1+ancrage, y1+milieu_y, chaine, 'black', 'nw', 'Purisa', 24, tag)
-    if tag == 'j2':
-        texte(x1+ancrage, y1+milieu_y, chaine, joueur1, 'nw', 'Purisa', 24, tag)
     if tag == 'j1':
+        texte(x1+ancrage, y1+milieu_y, chaine, joueur1, 'nw', 'Purisa', 24, tag)
+    if tag == 'j2':
         texte(x1+ancrage, y1+milieu_y, chaine, joueur2, 'nw', 'Purisa', 24, tag)
     if tag == 'creer':
         texte(x1+ancrage, y1+milieu_y, chaine, joueur2, 'nw', 'Purisa', 24, tag)
@@ -121,7 +121,7 @@ def division_boule(x, y, x_proche, y_proche, joueur, tour, tag, indice) :
     #print("x_proche :", x_proche, "| y_proche :", y_proche, "| x :", x, "| y :", y)
     #print(angle)
     distance = sqrt(dx**2+dy**2)
-    if distance < rayon[element] :
+    if distance < rayon[joueur] :
         #if x <= x_proche and y <= y_proche :
         new_x = (x - rayon[joueur] * cos(angle))
         new_y = (y - rayon[joueur] * sin(angle))
@@ -134,12 +134,12 @@ def division_boule(x, y, x_proche, y_proche, joueur, tour, tag, indice) :
         tag.pop(indice)
         tag.append(tag3)
         tag.append(tag4)
-        lst_x[element].pop(x_proche)
+        '''lst_x[element].pop(x_proche)
         lst_y[element].pop(y_proche)
         lst_x[element].append(x)
         lst_x[element].append(new_x)
         lst_y[element].append(y)
-        lst_x[element].append(new_y)
+        lst_x[element].append(new_y)'''
     return
 
 
@@ -270,6 +270,8 @@ def Jeu(rayon, tour):
     compteur2 = 0
     i = 0
     obstacles(randint(1, 5)) #variante obstacles
+    menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j1')
+    mise_a_jour()
     while i < tour:
         
         evenement = attente_clic_ou_touche()
@@ -281,8 +283,8 @@ def Jeu(rayon, tour):
 
         elif 'Clic' in evenement[2]:
             x1, y1, z1 = evenement
-            efface('j2')
-            menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j1')
+            efface('j1')
+            menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j2')
             mise_a_jour()
             distance1, x_proche, y_proche, indice = calc_distance(x1, y1, lst_x[1], lst_y[1], joueur1)
             distanceO, xO, yO, indO = calc_distance(x1, y1, obtx, obty, joueur1) #variante obstacles
@@ -295,23 +297,23 @@ def Jeu(rayon, tour):
                 efface('budget_j2')
                 menu_textuel(largeurFenetre-55, 15, largeurFenetre-55, 15, tIl vous reste :"+str(budget[1]), 'budget_j1')
                 mise_a_jour()'''
-            if i == 0 and intersection(distanceO, rayon[1]) == False :
+            if i == 0 and intersection(distanceO, rayon[joueur2]) == False :
                 tag1.append(etiquette(joueur1, i))
-                cercle(x1, y1, rayon[0], 'black', joueur1, 1, tag1[compteur1])
+                cercle(x1, y1, rayon[joueur1], 'black', joueur1, 1, tag1[compteur1])
                 compteur1 += 1
                 lst_x[0].append(x1)
                 lst_y[0].append(y1)
             else :
-                if intersection(distance1, rayon[1]) == False and intersection(distanceO, rayon[0]) == False : 
+                if intersection(distance1, rayon[joueur2]) == False and intersection(distanceO, rayon[joueur1]) == False : 
                     tag1.append(etiquette(joueur1, i))
-                    cercle(x1, y1, rayon[0], 'black', joueur1, 1, tag1[compteur1])
+                    cercle(x1, y1, rayon[joueur1], 'black', joueur1, 1, tag1[compteur1])
                     compteur1 += 1
                     lst_x[0].append(x1)
                     lst_y[0].append(y1)
                 else :
                     division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
         
-        evenement=attente_clic_ou_touche()
+        evenement = attente_clic_ou_touche()
         if evenement[2]=='Touche':
             if evenement[1] == 't':
                 i = terminaison(tour,i)
@@ -320,8 +322,8 @@ def Jeu(rayon, tour):
 
         if 'Clic' in evenement[2]:
             x2, y2, z2 = evenement
-            efface('j1')
-            menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j2')
+            efface('j2')
+            menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j1')
             mise_a_jour()
             distance2, x_proche, y_proche, indice = calc_distance(x2, y2, lst_x[0], lst_y[0], joueur2)
             distanceO, xO, yO, indO = calc_distance(x2, y2, obtx, obty, joueur2) #variante obstacles
@@ -333,9 +335,9 @@ def Jeu(rayon, tour):
                 efface('budget_j1')
                 menu_textuel(largeurFenetre-55, 15, largeurFenetre-55, 15, "Il vous reste :"+str(budget[2]), 'budget_j2')
                 mise_a_jour()'''
-            if intersection(distance2, rayon[0]) == False and intersection(distanceO, rayon[1]) == False :
+            if intersection(distance2, rayon[joueur1]) == False and intersection(distanceO, rayon[joueur1]) == False :
                 tag2.append(etiquette(joueur2, i))
-                cercle(x2, y2, rayon[1], 'black', joueur2, 1, tag2[compteur2])
+                cercle(x2, y2, rayon[joueur1], 'black', joueur2, 1, tag2[compteur2])
                 compteur2 += 1
                 lst_x[1].append(x2)
                 lst_y[1].append(y2)
@@ -478,7 +480,8 @@ if __name__ == '__main__':
     obtx = []
     obty = []
     tour = 20
-    rayon = [50, 50, 50]
+    rayon = {'obstacle' : 50, joueur1 : 50, joueur2 : 50}
+    lst_rayon = {joueur1 : [], joueur2 : []}
     largeurFenetre = 1000
     hauteurFenetre = 1000
     etat_taille = [False]
