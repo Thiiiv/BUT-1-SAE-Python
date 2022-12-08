@@ -1,4 +1,5 @@
 #-----Imports-----
+
 import string
 from upemtk import *
 from random import randint
@@ -47,10 +48,10 @@ def calc_distance(x, y, lst_x, lst_y, joueur) :
         y_proche = lst_y[indice]
         print("x_proche :", x_proche, "| y_proche :", y_proche)
 
-        
     for j in range(0, len(temp1)) :
         distance.append(sqrt(temp2[j]**2 + temp1[j]**2))
     return distance, x_proche, y_proche, indice
+
 
 def calculer_aire(lst_x, lst_y, lst_rayon, joueur):
     lst_pi = []
@@ -74,6 +75,7 @@ def intersection(distance, rayon):
             return True
     return False
 
+
 def menu_textuel(x1, y1, x2, y2, chaine='', tag='None') :
     """
     Affiche le texte centré par rapport au rectangle.
@@ -95,6 +97,14 @@ def menu_textuel(x1, y1, x2, y2, chaine='', tag='None') :
     if tag == 'j1':
         texte(x1+ancrage, y1+milieu_y, chaine, joueur2, 'nw', 'Purisa', 24, tag)
     if tag == 'creer':
+        texte(x1+ancrage, y1+milieu_y, chaine, joueur2, 'nw', 'Purisa', 24, tag)
+    if tag == 'term1':
+        texte(x1+ancrage, y1+milieu_y, chaine, 'grey', 'nw', 'Purisa', 24, tag)
+    if tag == 'scor':
+        texte(x1+ancrage, y1+milieu_y, chaine, 'grey', 'nw', 'Purisa', 24, tag)
+    if tag == 'scor1':
+        texte(x1+ancrage, y1+milieu_y, chaine, joueur1, 'nw', 'Purisa', 24, tag)
+    if tag == 'scor2':
         texte(x1+ancrage, y1+milieu_y, chaine, joueur2, 'nw', 'Purisa', 24, tag)
 
 
@@ -178,7 +188,8 @@ def start(tour) :
         ferme_fenetre()
     return
 
-def fin(n):
+
+def fin():
     """
     Affiche le menu de fin pour dire le gagnant du jeu et quitte.
     """
@@ -238,7 +249,6 @@ def j2():
     return joueur2
 
 
-
 def Jeu(rayon, tour):
     '''La fonction Jeu est le squelette de notre code pour le Jeu des 
     Boules elle réutilise les fonctions précédentes pour pouvoir proposé un jeu fonctionnelle.'''
@@ -266,6 +276,8 @@ def Jeu(rayon, tour):
         if evenement[2] == 'Touche':
             if evenement[1] == 't':
                 i = terminaison(tour,i)
+            if evenement[1] == 's':
+                score()
 
         elif 'Clic' in evenement[2]:
             x1, y1, z1 = evenement
@@ -303,6 +315,9 @@ def Jeu(rayon, tour):
         if evenement[2]=='Touche':
             if evenement[1] == 't':
                 i = terminaison(tour,i)
+            if evenement[1] == 's':
+                score()
+
         if 'Clic' in evenement[2]:
             x2, y2, z2 = evenement
             efface('j1')
@@ -331,12 +346,7 @@ def Jeu(rayon, tour):
     
     attente_clic()
     ferme_fenetre()
-    if len(tag1) > len(tag2) :
-        fin(1)
-    elif len(tag2) > len(tag1) :
-        fin(2)
-    else :
-        fin(0)
+    fin()
 
 #-----Variantes-----
 '''
@@ -422,7 +432,7 @@ def obstacles(nombre) :
 
 def terminaison(tour,i):
     rectangle(0, hauteurFenetre//4, largeurFenetre//2, 0, 'orange', 'orange', tag='term1')
-    rectangle(5, hauteurFenetre//4-5, largeurFenetre//2-5, 5, 'grey', 'grey', tag='term1')
+    rectangle(5, hauteurFenetre//4-5, largeurFenetre//2-5, 5, 'black', 'black', tag='term1')
     menu_textuel(0, hauteurFenetre//4-5, largeurFenetre//2-5, 0, 'Fin du jeu dans 5 tours', tag='term1')
     mise_a_jour()
     sleep(2)
@@ -444,6 +454,21 @@ def taille_des_boules(joueur) :
         return rayon
     else :
         return 0 
+
+def score():
+    rectangle(0, hauteurFenetre//4, largeurFenetre//2, 0, 'orange', 'orange', tag='scor')
+    rectangle(5, hauteurFenetre//4-5, largeurFenetre//2-5, 5, 'black', 'black', tag='scor')
+    menu_textuel(0, hauteurFenetre//6-5, largeurFenetre//2-5, 0, 'Score des joueurs:', tag='scor')
+    menu_textuel(0, hauteurFenetre//4-5, largeurFenetre//2-5, 0, calculer_aire(lst_x, lst_y, rayon, joueur1), tag='scor1')
+    menu_textuel(0, hauteurFenetre//3-5, largeurFenetre//2-5, 0, calculer_aire(lst_x, lst_y, rayon, joueur2), tag='scor2')
+    mise_a_jour()
+    sleep(2)
+    efface('scor')
+    efface('scor1')
+    efface('scor2')
+    pass
+
+#-----Main-----
 
 if __name__ == '__main__':
     joueur1 = j1() # Variables qu'on a besoin de généralisé dans le code
