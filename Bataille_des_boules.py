@@ -84,7 +84,7 @@ def intersection(distance, rayon):
                 return True
     return False
 
-def menu_textuel(x1, y1, x2, y2, chaine='', tag='None', couleur : str = '') :
+def menu_textuel(x1, y1, x2, y2, chaine='', tag='None', couleur : str = 'black') :
     """
     Affiche le texte centré par rapport au rectangle.
     :param float x1: ax du rectange
@@ -97,7 +97,7 @@ def menu_textuel(x1, y1, x2, y2, chaine='', tag='None', couleur : str = '') :
     dy = y2-y1
     ancrage = (dx-longueur_texte(chaine))/2
     milieu_y = (dy-hauteur_texte())/2
-    texte(x1+ancrage, y1+milieu_y, chaine, 'black', 'nw', 'Purisa', 24, tag)
+    texte(x1+ancrage, y1+milieu_y, chaine, couleur, 'nw', 'Purisa', 24, tag)
     if tag == 'j1':
         texte(x1+ancrage, y1+milieu_y, chaine, joueur1, 'nw', 'Purisa', 24, tag)
     if tag == 'j2':
@@ -112,10 +112,6 @@ def menu_textuel(x1, y1, x2, y2, chaine='', tag='None', couleur : str = '') :
         texte(x1+ancrage, y1+milieu_y, chaine, joueur1, 'nw', 'Purisa', 24, tag)
     if tag == 'scor2':
         texte(x1+ancrage, y1+milieu_y, chaine, joueur2, 'nw', 'Purisa', 24, tag)
-    if tag == 'budget_j1' :
-        texte(x1+ancrage, y1, chaine, couleur, 'nw', 'Purisa', 24, tag)
-    if tag == 'budget_j2' :
-        texte(x1+ancrage, y1, chaine, couleur, 'nw', 'Purisa', 24, tag)
 
 def division_boule(x, y, x_proche, y_proche, joueur, tour, tag, indice) :
     dy = y-y_proche
@@ -313,13 +309,14 @@ def Jeu(rayon, tour):
         if 'Clic' in evenement[2] :
             x1, y1, z1 = evenement
             efface('j2')
+            efface('tour')
             menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j1')
+            menu_textuel(largeurFenetre//2, 15, largeurFenetre//2, 15, 'Nombre de tours restants : '+str(tour-i-1), 'tour', joueur1)
             if variante['taille_des_boules'] == True :
                 efface('budget_j2')
-                menu_textuel(largeurFenetre-300, 15, largeurFenetre, 15, 'Il vous reste :'+str(budget[joueur1]), 'budget_j1', joueur1)
+                menu_textuel(largeurFenetre-100, 15, largeurFenetre-100, 15, 'Budget : '+str(budget[joueur1]), 'budget_j1', joueur1)
             mise_a_jour()
-            distance1, x_proche, y_proche, indice = calc_distance(x1, y1, lst_x[1], lst_y[1], joueur1)
-            distanceO = calc_distance(x1, y1, lst_x[2], lst_y[2], joueur1)[0] #variante obstacles
+            #variante obstacles
             #print("DistanceO :", distanceO)
             #print("distance1 :", distance1)
             #print()
@@ -332,6 +329,8 @@ def Jeu(rayon, tour):
             if variante['taille_des_boules'] == True :
                 rayon[joueur1] = taille_des_boules(joueur1)
             if rayon[joueur1] != 0 :
+                distance1, x_proche, y_proche, indice = calc_distance(x1, y1, lst_x[1], lst_y[1], joueur1)
+                distanceO = calc_distance(x1, y1, lst_x[2], lst_y[2], joueur1)[0] 
                 lst_rayon[joueur1].append(rayon[joueur1])
                 if i == 0 and intersection(distanceO, lst_rayon[joueur1][-1]) == False :
                     tag = etiquette(joueur1, i)
@@ -344,7 +343,7 @@ def Jeu(rayon, tour):
                     lst_x[0].append(x1)
                     lst_y[0].append(y1)
                 else :
-                    if intersection(distance1, lst_rayon[joueur2][-1]) == False and intersection(distanceO, lst_rayon[joueur1][-1]) == False : 
+                    if intersection(distance1, lst_rayon[joueur1][-1]) == False and intersection(distanceO, lst_rayon[joueur1][-1]) == False : 
                         tag = etiquette(joueur1, i)
                         tag1.append(tag)
                         cercle(x1, y1, lst_rayon[joueur1][-1], 'black', joueur1, 1, tag)
@@ -378,13 +377,14 @@ def Jeu(rayon, tour):
             #print("je suis dans la boucle du j2")
             x2, y2, z2 = evenement
             efface('j1')
+            efface('tour')
             menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j2')
+            menu_textuel(largeurFenetre//2, 15, largeurFenetre//2, 15, 'Nombre de tours restants : '+str(tour-i-1), 'tour', joueur2)
             if variante['taille_des_boules'] == True :
                 efface('budget_j1')
-                menu_textuel(largeurFenetre-300, 15, largeurFenetre, 15, "Il vous reste :"+str(budget[joueur2]), 'budget_j2', joueur2)
+                menu_textuel(largeurFenetre-100, 15, largeurFenetre-100, 15, "Budget : "+str(budget[joueur2]), 'budget_j2', joueur2)
             mise_a_jour()
-            distance2, x_proche, y_proche, indice = calc_distance(x2, y2, lst_x[0], lst_y[0], joueur2)
-            distanceO = calc_distance(x2, y2, lst_x[2], lst_y[2], joueur2)[0] #variante obstacles
+             #variante obstacles
             #print("distance2 :", distance2)
             #print()
             
@@ -396,8 +396,10 @@ def Jeu(rayon, tour):
             if variante['taille_des_boules'] == True :
                 rayon[joueur2] = taille_des_boules(joueur2)
             if rayon[joueur2] != 0 :
+                distance2, x_proche, y_proche, indice = calc_distance(x2, y2, lst_x[0], lst_y[0], joueur2)
+                distanceO = calc_distance(x2, y2, lst_x[2], lst_y[2], joueur2)[0]
                 lst_rayon[joueur2].append(rayon[joueur2])
-                if intersection(distance2, lst_rayon[joueur1][-1]) == False and intersection(distanceO, lst_rayon[joueur2][-1]) == False :
+                if intersection(distance2, lst_rayon[joueur2][-1]) == False and intersection(distanceO, lst_rayon[joueur2][-1]) == False :
                     tag = etiquette(joueur2, i)
                     tag2.append(tag)
                     cercle(x2, y2, lst_rayon[joueur2][-1], 'black', joueur2, 1, tag)
