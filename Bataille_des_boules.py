@@ -282,6 +282,8 @@ def Jeu(rayon, tour):
     if variante['obstacles'] == True :
         obstacles(randint(1, 5)) #variante obstacles
         mise_a_jour()
+    if bonus['arene1'] == True :
+        bonus_obstacles()
     etat_terminaison = False
     while i < tour:
         menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j1')  
@@ -584,7 +586,7 @@ def menu_variante(variante, rayon, tour):
                 mise_a_jour()
         else :
             ferme_fenetre()
-            Jeu(rayon, tour)
+            menu_bonus(bonus, rayon, tour)
 
 def sablier(secondes, joueur):
     """
@@ -595,7 +597,7 @@ def sablier(secondes, joueur):
     while time()<t1 or typeEv != "Touche" or "Clic" not in typeEv :
         ev=donne_evenement()
         typeEv=type_evenement(ev)
-        menu_textuel(largeurFenetre-75, 15, largeurFenetre-75, 15, str(t1-time()), 'temps', joueur)
+        menu_textuel(largeurFenetre/2, 90, largeurFenetre/2, 15, str(t1-time()), 'temps', joueur)
         if time()>= t1 :
             return ('', '', 'Touche')
         if "Clic" in typeEv:
@@ -605,10 +607,6 @@ def sablier(secondes, joueur):
         mise_a_jour()
         efface('temps')
     return None
-
-def affichage(temps, couleur):
-    efface('timer')
-    texte(19*1//20,h//32,f'')
 
 def obstacles(nombre) :
     '''Fonctions pour la variante obstacles'''
@@ -660,6 +658,7 @@ def taille_des_boules(joueur) :
         return rayon
     else :
         return 0 
+        
 
 def dynamique(lst_x, lst_y, lst_rayon, tag_j1, tag_j2) :
     distance1 = []
@@ -700,7 +699,138 @@ def dynamique(lst_x, lst_y, lst_rayon, tag_j1, tag_j2) :
             else :
                 cercle(lst_x[1][k], lst_y[1][k], lst_rayon[joueur2][k], 'black', joueur2, 1, tag_j2[k])
     return
+
+#-----Bonus-----
+
+def bonus_obstacles():
+    cercle(hauteurFenetre/2, largeurFenetre/2, 50, 'black', 'grey', 1, "obstacle")
+    cercle(hauteurFenetre/3, largeurFenetre/3, 50, 'black', 'grey', 1, "obstacle")
+    cercle(hauteurFenetre/4, largeurFenetre/4, 50, 'black', 'grey', 1, "obstacle")
+    cercle(hauteurFenetre/3+320, largeurFenetre/3, 50, 'black', 'grey', 1, "obstacle")
+    cercle(hauteurFenetre/3+400, largeurFenetre/4, 50, 'black', 'grey', 1, "obstacle")
+    lst_x[2].append(hauteurFenetre/2)
+    lst_y[2].append(largeurFenetre/2)
+    lst_x[2].append(hauteurFenetre/3)
+    lst_y[2].append(largeurFenetre/3)
+    lst_x[2].append(hauteurFenetre/4)
+    lst_y[2].append(largeurFenetre/4)
+    lst_x[2].append(hauteurFenetre/3+320)
+    lst_y[2].append(largeurFenetre/3)    
+    lst_x[2].append(hauteurFenetre/3+400)
+    lst_y[2].append(largeurFenetre/4)
+    return
     
+def menu_bonus(bonus, rayon, tour):
+    cree_fenetre(largeurFenetre, hauteurFenetre)
+    rectangle(0, hauteurFenetre, largeurFenetre, 0, 'orange', 'orange')
+    rectangle(5, hauteurFenetre-5, largeurFenetre-5, 5, 'black', 'black')
+    x_gauche = 10
+    x_droite = largeurFenetre//2 - x_gauche
+    y_superieur = 200
+    y_inferieur = y_superieur*2
+    x_temp = x_droite+x_gauche
+    
+# Boutons options
+    rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'red', 'red', 1, 'arene1')
+    rectangle(x_temp, y_inferieur, x_droite*2, y_superieur, 'red', 'red', 1, 'bonus2')
+    rectangle(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'red', 'red', 1, 'arene2')
+    rectangle(x_temp, y_inferieur+10, x_droite*2, y_superieur*3, 'red', 'red', 1, 'bonus2')
+    rectangle(x_gauche, y_superieur*3+10, x_droite, y_superieur*4, 'red', 'red', 1, 'arene3')
+    rectangle(x_temp, y_superieur*3+10, x_droite*2, y_superieur*4, 'red', 'red', 1, 'bonus2')
+    
+    
+    # Element de design
+    rectangle(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'orange', 'red', 1, 'Jeux')
+    cercle(largeurFenetre*0.75, y_superieur//2, 50, 'orange', 'red', 1, 'Jeux3')
+    cercle(25*x_gauche, y_superieur//2, 50, 'orange', 'red', 1, 'Jeux4')
+    
+    # Textes options
+    menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Arene 1')
+    menu_textuel(x_temp, y_inferieur, x_droite*2, y_superieur, 'Bonus2')
+    menu_textuel(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'Arene 2')
+    menu_textuel(x_temp, y_inferieur+10, x_droite*2, y_superieur*3, 'Bonus2')
+    menu_textuel(x_gauche, y_superieur*3+10, x_droite, y_superieur*4, 'Arene 3')
+    menu_textuel(x_temp, y_superieur*3+10, x_droite*2, y_superieur*4, 'Bonus2')
+
+    
+    # Texte générique
+    menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//20, 'Bonus')
+    menu_textuel(largeurFenetre*0.75, y_superieur//2, x_droite//2, hauteurFenetre//5, 'Créer par Thivakar et Tony', 'creer')
+    
+    while True :
+        x, y, touche = attente_clic_ou_touche()
+        if 'Clic' in touche :
+            if x >= x_gauche and x <= x_droite and y >= y_superieur and y<= y_inferieur :
+                efface('arene1')
+                mise_a_jour()
+                bonus['arene1'] = not bonus['arene1']
+                if bonus['arene1'] == True :
+                    rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'green', 'green', 1, 'arene1')
+                else :
+                    rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'red', 'red', 1, 'arene1')
+                menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Arene 1')
+                mise_a_jour()
+            
+            if x >= x_temp and x <= x_droite*2 and y >= y_superieur and y <= y_inferieur :
+                efface('bonus2')
+                mise_a_jour()
+                bonus['bonus2'] = not bonus['bonus2']
+                if bonus['bonus2'] == True :
+                    rectangle(x_temp, y_inferieur, x_droite*2, y_superieur, 'green', 'green', 1, 'bonus2')
+                else :
+                    rectangle(x_temp, y_inferieur, x_droite*2, y_superieur, 'red', 'red', 1, 'bonus2')
+                menu_textuel(x_temp, y_inferieur, x_droite*2, y_superieur, 'Bonus2')
+                mise_a_jour()
+
+            if x >= x_gauche and x <= x_droite and y >= y_inferieur+10 and y <= y_superieur*3 :
+                efface('arene2')
+                mise_a_jour()
+                bonus['arene2'] = not bonus['arene2']
+                if bonus['arene2'] == True :
+                    rectangle(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'green', 'green', 1, 'arene2')
+                else :
+                    rectangle(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'red', 'red', 1, 'arene2')
+                menu_textuel(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'Arene 2')
+                mise_a_jour()
+
+            if x >= x_temp and x <= x_droite*2 and y >= y_inferieur+10 and y <= y_superieur*3 :
+                efface('bonus2')
+                mise_a_jour()
+                bonus['bonus2'] = not bonus['bonus2']
+                if bonus['bonus2'] == True :
+                    rectangle(x_temp, y_inferieur+10, x_droite*2, y_superieur*3, 'green', 'green', 1, 'bonus2')
+                else :
+                    rectangle(x_temp, y_inferieur+10, x_droite*2, y_superieur*3, 'red', 'red', 1, 'bonus2')
+                menu_textuel(x_temp, y_inferieur+10, x_droite*2, y_superieur*3, 'Bonus2')
+                mise_a_jour()
+
+            if x >= x_gauche and x <= x_droite and y >= y_superieur*3+10 and y<= y_superieur*4 :
+                efface('arene3')
+                mise_a_jour()
+                bonus['arene3'] = not bonus['arene3']
+                if bonus['arene3'] == True :
+                    rectangle(x_gauche, y_superieur*3+10, x_droite, y_superieur*4, 'green', 'green', 1, 'arene3')
+                else :
+                    rectangle(x_gauche, y_superieur*3+10, x_droite, y_superieur*4, 'red', 'red', 1, 'arene3')
+                menu_textuel(x_gauche, y_superieur*3+10, x_droite, y_superieur*4, 'Arene 3')
+                mise_a_jour()
+            
+            if x >= x_temp and x <= x_droite*2 and y >= y_superieur*3+10 and y <= y_superieur*4 :
+                efface('bonus2')
+                mise_a_jour()
+                bonus['bonus2'] = not bonus['bonus2']
+                if bonus['bonus2'] == True :
+                    rectangle(x_temp, y_superieur*3+10, x_droite*2, y_superieur*4, 'green', 'green', 1, 'bonus2')
+                else :
+                    rectangle(x_temp, y_superieur*3+10, x_droite*2, y_superieur*4, 'red', 'red', 1, 'bonus2')
+                menu_textuel(x_temp, y_superieur*3+10, x_droite*2, y_superieur*4, 'Bonus2')
+                mise_a_jour()
+        else :
+            ferme_fenetre()
+            Jeu(rayon, tour)
+
+
+#-----Main-----
 
 if __name__ == '__main__':
     joueur1 = j1() # Variables qu'on a besoin de généralisé dans le code
@@ -715,4 +845,5 @@ if __name__ == '__main__':
     #coordonnees = dict()
     lst_rayon = {joueur1 : [], joueur2 : []}
     variante = {'taille_des_boules' : False, 'obstacles' : False, 'terminaison' : False, 'score' : False, 'dynamique' : False, 'sablier' : False}
+    bonus = {'arene1' : False, 'arene2' : False, 'arene3' : False, 'bonus2' : False}
     start(tour)
