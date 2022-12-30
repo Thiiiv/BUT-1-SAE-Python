@@ -284,9 +284,13 @@ def Jeu(rayon, tour):
         mise_a_jour()
     etat_terminaison = False
     while i < tour:
+        menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j1')  
+        efface('j2')
+        efface('tour')
+        menu_textuel(largeurFenetre//2, 15, largeurFenetre//2, 15, 'Nombre de tours restants : '+str(tour-i-1), 'tour', joueur1)
         if variante['terminaison'] == True or variante['score'] == True or variante['sablier'] == True :
             if variante['sablier'] == True :
-                evenement = sablier(5)
+                evenement = sablier(5, joueur1)
                 if evenement == None :
                     evenement = ('', '', 'Touche')
             else :
@@ -306,13 +310,10 @@ def Jeu(rayon, tour):
         else :
             evenement = attente_clic_ou_touche()
             print(evenement)
-            
+        
+        
         if 'Clic' in evenement[2] :
             x1, y1, z1 = evenement
-            efface('j2')
-            efface('tour')
-            menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j1')
-            menu_textuel(largeurFenetre//2, 15, largeurFenetre//2, 15, 'Nombre de tours restants : '+str(tour-i-1), 'tour', joueur1)
             if variante['taille_des_boules'] == True :
                 efface('budget_j2')
                 menu_textuel(largeurFenetre-100, 15, largeurFenetre-100, 15, 'Budget : '+str(budget[joueur1]), 'budget_j1', joueur1)
@@ -383,11 +384,14 @@ def Jeu(rayon, tour):
                         else :
                             division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
                             #print("tag2 :", tag2)
-        
+        menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j2')
+        efface('j1')
+        efface('tour')
+        menu_textuel(largeurFenetre//2, 15, largeurFenetre//2, 15, 'Nombre de tours restants : '+str(tour-i-1), 'tour', joueur2)
         if variante['terminaison'] == True or variante['score'] == True or variante['sablier'] == True :
             if variante['sablier'] == True :
                 efface('temps')
-                evenement = sablier(5)
+                evenement = sablier(5, joueur2)
                 if evenement == None :
                     evenement = ('', '', 'Touche')
             else :
@@ -406,14 +410,10 @@ def Jeu(rayon, tour):
                     evenement = attente_clic_ou_touche()
         else :
             evenement = attente_clic_ou_touche()
-            
+        
         if 'Clic' in evenement[2] :
             #print("je suis dans la boucle du j2")
             x2, y2, z2 = evenement
-            efface('j1')
-            efface('tour')
-            menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j2')
-            menu_textuel(largeurFenetre//2, 15, largeurFenetre//2, 15, 'Nombre de tours restants : '+str(tour-i-1), 'tour', joueur2)
             if variante['taille_des_boules'] == True :
                 efface('budget_j1')
                 menu_textuel(largeurFenetre-100, 15, largeurFenetre-100, 15, "Budget : "+str(budget[joueur2]), 'budget_j2', joueur2)
@@ -586,16 +586,18 @@ def menu_variante(variante, rayon, tour):
             ferme_fenetre()
             Jeu(rayon, tour)
 
-def sablier(secondes):
+def sablier(secondes, joueur):
     """
     Attend que l'utilisateur clique sur la fenêtre pendant le temps indiqué
     """
     t1=time()+secondes
     typeEv = "RAS"
-    while time()<t1 and typeEv != "Touche" or "Clic" not in typeEv :
+    while time()<t1 or typeEv != "Touche" or "Clic" not in typeEv :
         ev=donne_evenement()
         typeEv=type_evenement(ev)
-        menu_textuel(largeurFenetre-75, 15, largeurFenetre-75, 15, str(t1-time()), 'temps', 'red')
+        menu_textuel(largeurFenetre-75, 15, largeurFenetre-75, 15, str(t1-time()), 'temps', joueur)
+        if time()>= t1 :
+            return ('', '', 'Touche')
         if "Clic" in typeEv:
             return clic_x(ev), clic_y(ev), typeEv
         elif typeEv == "Touche":
