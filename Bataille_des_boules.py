@@ -2,7 +2,7 @@
 import string
 from upemtk import *
 from random import randint
-from time import sleep, time
+from time import sleep, time, perf_counter
 from math import sqrt, atan2, acos, pi, cos, sin
 
 #-----Fonctions-----
@@ -229,7 +229,6 @@ def fin():
 
     menu_textuel(x_droite+x_gauche, y_superieur, x_droite*2, y_inferieur, 'Quitter')
     attente_clic()
-    sleep(1)
     ferme_fenetre()
 
 
@@ -276,6 +275,7 @@ def Jeu(rayon, tour):
     x_proche = 0
     y_proche = 0
     indice = 0
+    temps = 0
     #compteur1 = 0
     #compteur2 = 0
     i = 0
@@ -284,8 +284,13 @@ def Jeu(rayon, tour):
         mise_a_jour()
     etat_terminaison = False
     while i < tour:
-        if variante['terminaison'] == True or variante['score'] == True :
-            evenement = attente_clic_ou_touche()
+        if variante['terminaison'] == True or variante['score'] == True or variante['sablier'] == True :
+            if variante['sablier'] == True :
+                evenement = sablier(5)
+                if evenement == None :
+                    evenement = ('', '', 'Touche')
+            else :
+                evenement = attente_clic_ou_touche()
             #print(evenement)
             if evenement[2] == 'Touche':
                 if evenement[1] == 't':
@@ -302,7 +307,6 @@ def Jeu(rayon, tour):
             evenement = attente_clic_ou_touche()
             print(evenement)
             
-                
         if 'Clic' in evenement[2] :
             x1, y1, z1 = evenement
             efface('j2')
@@ -380,8 +384,14 @@ def Jeu(rayon, tour):
                             division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
                             #print("tag2 :", tag2)
         
-        if variante['terminaison'] == True or variante['score'] == True :
-            evenement = attente_clic_ou_touche()
+        if variante['terminaison'] == True or variante['score'] == True or variante['sablier'] == True :
+            if variante['sablier'] == True :
+                efface('temps')
+                evenement = sablier(5)
+                if evenement == None :
+                    evenement = ('', '', 'Touche')
+            else :
+                evenement = attente_clic_ou_touche()
             #print(evenement)
             if evenement[2] == 'Touche':
                 if evenement[1] == 't':
@@ -396,7 +406,7 @@ def Jeu(rayon, tour):
                     evenement = attente_clic_ou_touche()
         else :
             evenement = attente_clic_ou_touche()
-                  
+            
         if 'Clic' in evenement[2] :
             #print("je suis dans la boucle du j2")
             x2, y2, z2 = evenement
@@ -576,12 +586,23 @@ def menu_variante(variante, rayon, tour):
             ferme_fenetre()
             Jeu(rayon, tour)
 
-def sablier():
-    '''Fonctions pour la variante sablier'''
-    t1 = time() + 20 if sablier else None
-    while t1 is None or time() < t1:
-        ev = donne_evenement() 
-        typeEv = type_evenement(ev)
+def sablier(secondes):
+    """
+    Attend que l'utilisateur clique sur la fenêtre pendant le temps indiqué
+    """
+    t1=time()+secondes
+    typeEv = "RAS"
+    while time()<t1 and typeEv != "Touche" or "Clic" not in typeEv :
+        ev=donne_evenement()
+        typeEv=type_evenement(ev)
+        menu_textuel(largeurFenetre-75, 15, largeurFenetre-75, 15, str(t1-time()), 'temps', 'red')
+        if "Clic" in typeEv:
+            return clic_x(ev), clic_y(ev), typeEv
+        elif typeEv == "Touche":
+            return -1, touche(ev), typeEv
+        mise_a_jour()
+        efface('temps')
+    return None
 
 def affichage(temps, couleur):
     efface('timer')
