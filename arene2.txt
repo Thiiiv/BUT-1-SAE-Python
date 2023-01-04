@@ -1,0 +1,9 @@
+2 2 50 black grey 1 obstacle
+3 3 50 black grey 1 obstacle
+3 3 50 black grey 1 obstacle
+2 1.65 50 black grey 1 obstacle
+2 1.5 50 black grey 1 obstacle
+2 1.4 50 black grey 1 obstacle
+2 1.4 50 black grey 1 obstacle
+2 1.5 50 black grey 1 obstacle
+2 1.65 50 black grey 1 obstacle
