@@ -1,5 +1,6 @@
 #-----Imports-----
 import string
+import os
 from upemtk import *
 from random import randint
 from time import sleep, time, perf_counter
@@ -98,10 +99,6 @@ def menu_textuel(x1, y1, x2, y2, chaine='', tag='None', couleur : str = 'black')
     ancrage = (dx-longueur_texte(chaine))/2
     milieu_y = (dy-hauteur_texte())/2
     texte(x1+ancrage, y1+milieu_y, chaine, couleur, 'nw', 'Purisa', 24, tag)
-    if tag == 'j1':
-        texte(x1+ancrage, y1+milieu_y, chaine, joueur1, 'nw', 'Purisa', 24, tag)
-    if tag == 'j2':
-        texte(x1+ancrage, y1+milieu_y, chaine, joueur2, 'nw', 'Purisa', 24, tag)
     if tag == 'creer':
         texte(x1+ancrage, y1+milieu_y, chaine, joueur2, 'nw', 'Purisa', 24, tag)
     if tag == 'term1':
@@ -275,18 +272,45 @@ def Jeu(rayon, tour):
     x_proche = 0
     y_proche = 0
     indice = 0
-    temps = 0
     #compteur1 = 0
     #compteur2 = 0
     i = 0
     if variante['obstacles'] == True :
-        obstacles(randint(1, 5)) #variante obstacles
+        for obs in range(randint(2,8)) :
+            obstacles() #variante obstacles
         mise_a_jour()
     if bonus['arene1'] == True :
-        bonus_obstacles()
+        tempo = bonus_obstacles('arene1.txt')
+        obstacles(hauteurFenetre/int(tempo[0]), largeurFenetre/int(tempo[1]), int(tempo[2]), tempo[3], tempo[4], int(tempo[5]), tempo[6])
+        obstacles(hauteurFenetre/int(tempo[7]), largeurFenetre/int(tempo[8]), int(tempo[9]), tempo[10], tempo[11], int(tempo[12]), tempo[13])
+        obstacles(hauteurFenetre/int(tempo[14]), largeurFenetre/int(tempo[15]), int(tempo[16]), tempo[17], tempo[18], int(tempo[19]), tempo[20])
+        obstacles(hauteurFenetre/int(tempo[21])+320, largeurFenetre/int(tempo[22]), int(tempo[23]), tempo[24], tempo[25], int(tempo[26]), tempo[27])
+        obstacles(hauteurFenetre/int(tempo[28])+400, largeurFenetre/int(tempo[29]), int(tempo[30]), tempo[31], tempo[32], int(tempo[33]), tempo[34])
+    if bonus['arene2'] == True :
+        tempo = bonus_obstacles('arene2.txt')
+        obstacles(hauteurFenetre/int(tempo[0]), largeurFenetre/int(tempo[1]), int(tempo[2]), tempo[3], tempo[4], int(tempo[5]), tempo[6])
+        obstacles(hauteurFenetre/int(tempo[7]), largeurFenetre/int(tempo[8]), int(tempo[9]), tempo[10], tempo[11], int(tempo[12]), tempo[13])
+        obstacles(hauteurFenetre/int(tempo[14])+320, largeurFenetre/int(tempo[15]), int(tempo[16]), tempo[17], tempo[18], int(tempo[19]), tempo[20])
+        obstacles(hauteurFenetre/int(tempo[21])-200, largeurFenetre/float(tempo[22]), int(tempo[23]), tempo[24], tempo[25], int(tempo[26]), tempo[27])
+        obstacles(hauteurFenetre/int(tempo[28])-130, largeurFenetre/float(tempo[29]), int(tempo[30]), tempo[31], tempo[32], int(tempo[33]), tempo[34])
+        obstacles(hauteurFenetre/int(tempo[35])-50, largeurFenetre/float(tempo[36]), int(tempo[37]), tempo[38], tempo[39], int(tempo[40]), tempo[41])
+        obstacles(hauteurFenetre/int(tempo[42])+50, largeurFenetre/float(tempo[43]), int(tempo[44]), tempo[45], tempo[46], int(tempo[47]), tempo[48])
+        obstacles(hauteurFenetre/int(tempo[49])+130, largeurFenetre/float(tempo[50]), int(tempo[51]), tempo[52], tempo[53], int(tempo[54]), tempo[55])
+        obstacles(hauteurFenetre/int(tempo[56])+200, largeurFenetre/float(tempo[57]), int(tempo[58]), tempo[59], tempo[60], int(tempo[61]), tempo[62])
+    if bonus['arene3'] == True :
+        tempo = bonus_obstacles('arene3.txt')
+        obstacles(hauteurFenetre/int(tempo[0]), largeurFenetre/int(tempo[1]), int(tempo[2]), tempo[3], tempo[4], int(tempo[5]), tempo[6])
+        obstacles(hauteurFenetre/int(tempo[7]), largeurFenetre/int(tempo[8]), int(tempo[9]), tempo[10], tempo[11], int(tempo[12]), tempo[13])
+        obstacles(hauteurFenetre/int(tempo[14])+320, largeurFenetre/int(tempo[15]), int(tempo[16]), tempo[17], tempo[18], int(tempo[19]), tempo[20])
+        obstacles(hauteurFenetre/int(tempo[21])-200, largeurFenetre/float(tempo[22]), int(tempo[23]), tempo[24], tempo[25], int(tempo[26]), tempo[27])
+        obstacles(hauteurFenetre/int(tempo[28])-130, largeurFenetre/float(tempo[29]), int(tempo[30]), tempo[31], tempo[32], int(tempo[33]), tempo[34])
+        obstacles(hauteurFenetre/int(tempo[35])-50, largeurFenetre/float(tempo[36]), int(tempo[37]), tempo[38], tempo[39], int(tempo[40]), tempo[41])
+        obstacles(hauteurFenetre/int(tempo[42])+50, largeurFenetre/float(tempo[43]), int(tempo[44]), tempo[45], tempo[46], int(tempo[47]), tempo[48])
+        obstacles(hauteurFenetre/int(tempo[49])+130, largeurFenetre/float(tempo[50]), int(tempo[51]), tempo[52], tempo[53], int(tempo[54]), tempo[55])
+        obstacles(hauteurFenetre/int(tempo[56])+200, largeurFenetre/float(tempo[57]), int(tempo[58]), tempo[59], tempo[60], int(tempo[61]), tempo[62])
     etat_terminaison = False
     while i < tour:
-        menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j1')  
+        menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j1', joueur1)  
         efface('j2')
         efface('tour')
         menu_textuel(largeurFenetre//2, 15, largeurFenetre//2, 15, 'Nombre de tours restants : '+str(tour-i-1), 'tour', joueur1)
@@ -334,11 +358,16 @@ def Jeu(rayon, tour):
                 rayon[joueur1] = taille_des_boules(joueur1)
             if rayon[joueur1] != 0 :
                 distance1, x_proche, y_proche, indice = calc_distance(x1, y1, lst_x[1], lst_y[1], joueur1)
-                if variante['obstacles'] == True :
+
+                if bonus['arene1'] == True :
+                    distanceO = calc_distance(x1, y1, lst_x[2], lst_y[2], joueur1)[0]
+                
+                if variante['obstacles'] == True or bonus['arene1'] == True or bonus['arene2'] == True or bonus['arene3'] == True :
                     distanceO = calc_distance(x1, y1, lst_x[2], lst_y[2], joueur1)[0] 
                 lst_rayon[joueur1].append(rayon[joueur1])
-                if variante['obstacles'] == True :
+                if variante['obstacles'] == True or bonus['arene1'] == True or bonus['arene2'] == True or bonus['arene3'] == True :
                     if i == 0 and intersection(distanceO, lst_rayon[joueur1][-1]) == False :
+                        print('ligne 374 : Passed')
                         tag = etiquette(joueur1, i)
                         tag1.append(tag)
                         cercle(x1, y1, rayon[joueur1], 'black', joueur1, 1, tag)
@@ -349,7 +378,9 @@ def Jeu(rayon, tour):
                         lst_x[0].append(x1)
                         lst_y[0].append(y1)
                     else :
+                        print('ligne 374 : Not Passed')
                         if intersection(distance1, lst_rayon[joueur1][-1]) == False and intersection(distanceO, lst_rayon[joueur1][-1]) == False : 
+                            print('ligne 387 : Passed')
                             tag = etiquette(joueur1, i)
                             tag1.append(tag)
                             cercle(x1, y1, lst_rayon[joueur1][-1], 'black', joueur1, 1, tag)
@@ -359,7 +390,9 @@ def Jeu(rayon, tour):
                             lst_x[0].append(x1)
                             lst_y[0].append(y1)
                         else :
-                            if len(lst_rayon[joueur1]) > 0 :
+                            print('ligne 387 : Not Passed')
+                            if len(lst_rayon[joueur1]) > 0 and intersection(distanceO, lst_rayon[joueur1][-1]) != True :
+                                print('ligne 399 : Passed')
                                 division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
                                 #print("tag2 :", tag2)
                 else :
@@ -386,7 +419,7 @@ def Jeu(rayon, tour):
                         else :
                             division_boule(x1, y1, x_proche, y_proche, joueur2, tour, tag2, indice)
                             #print("tag2 :", tag2)
-        menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j2')
+        menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j2', joueur2)
         efface('j1')
         efface('tour')
         menu_textuel(largeurFenetre//2, 15, largeurFenetre//2, 15, 'Nombre de tours restants : '+str(tour-i-1), 'tour', joueur2)
@@ -433,10 +466,10 @@ def Jeu(rayon, tour):
                 rayon[joueur2] = taille_des_boules(joueur2)
             if rayon[joueur2] != 0 :
                 distance2, x_proche, y_proche, indice = calc_distance(x2, y2, lst_x[0], lst_y[0], joueur2)
-                if variante['obstacles'] == True :
+                if variante['obstacles'] == True or bonus['arene1'] == True or bonus['arene2'] == True or bonus['arene3'] == True :
                     distanceO = calc_distance(x2, y2, lst_x[2], lst_y[2], joueur2)[0]
                 lst_rayon[joueur2].append(rayon[joueur2])
-                if variante['obstacles'] == True :
+                if variante['obstacles'] == True or bonus['arene1'] == True or bonus['arene2'] == True or bonus['arene3'] == True :
                     if intersection(distance2, lst_rayon[joueur2][-1]) == False and intersection(distanceO, lst_rayon[joueur2][-1]) == False :
                         tag = etiquette(joueur2, i)
                         tag2.append(tag)
@@ -447,7 +480,8 @@ def Jeu(rayon, tour):
                         lst_x[1].append(x2)
                         lst_y[1].append(y2)
                     else :
-                        division_boule(x2, y2, x_proche, y_proche, joueur1, tour, tag1, indice)
+                        if intersection(distanceO, lst_rayon[joueur2][-1]) != True :
+                            division_boule(x2, y2, x_proche, y_proche, joueur1, tour, tag1, indice)
                         #print("tag1 :", tag1)
                 else :
                     if intersection(distance2, lst_rayon[joueur2][-1]) == False :
@@ -488,12 +522,12 @@ def menu_variante(variante, rayon, tour):
     x_temp = x_droite+x_gauche
     
 # Boutons options
-    rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'red', 'red', 1, 'taille des boules')
-    rectangle(x_temp, y_inferieur, x_droite*2, y_superieur, 'red', 'red', 1, 'obstacles')
-    rectangle(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'red', 'red', 1, 'terminaison')
-    rectangle(x_temp, y_inferieur+10, x_droite*2, y_superieur*3, 'red', 'red', 1, 'score')
-    rectangle(x_gauche, y_superieur*3+10, x_droite, y_superieur*4, 'red', 'red', 1, 'dynamique')
-    rectangle(x_temp, y_superieur*3+10, x_droite*2, y_superieur*4, 'red', 'red', 1, 'sablier')
+    rectangle(x_gauche, y_superieur, x_droite, y_inferieur, str('red' if variante['taille_des_boules'] == False else 'green'), str('red' if variante['taille_des_boules'] == False else 'green'), 1, 'taille des boules')
+    rectangle(x_temp, y_inferieur, x_droite*2, y_superieur, str('red' if variante['obstacles'] == False else 'green'), str('red' if variante['obstacles'] == False else 'green'), 1, 'obstacles')
+    rectangle(x_gauche, y_inferieur+10, x_droite, y_superieur*3, str('red' if variante['terminaison'] == False else 'green'), str('red' if variante['terminaison'] == False else 'green'), 1, 'terminaison')
+    rectangle(x_temp, y_inferieur+10, x_droite*2, y_superieur*3, str('red' if variante['score'] == False else 'green'), str('red' if variante['score'] == False else 'green'), 1, 'score')
+    rectangle(x_gauche, y_superieur*3+10, x_droite, y_superieur*4, str('red' if variante['dynamique'] == False else 'green'), str('red' if variante['dynamique'] == False else 'green'), 1, 'dynamique')
+    rectangle(x_temp, y_superieur*3+10, x_droite*2, y_superieur*4, str('red' if variante['sablier'] == False else 'green'), str('red' if variante['sablier'] == False else 'green'), 1, 'sablier')
     #rectangle(x_gauche, y_superieur*6+10, x_droite, y_superieur*7, 'grey', 'grey', 1, 'jouer')
     
     
@@ -608,14 +642,16 @@ def sablier(secondes, joueur):
         efface('temps')
     return None
 
-def obstacles(nombre) :
+def obstacles(x=None, y=None, r: int=50, couleur: str='grey', remplissage: str='grey', epaisseur: int=1, tag: str='obstacle') :
     '''Fonctions pour la variante obstacles'''
-    for i in range(nombre) :
-        x = randint(50, 1000-50)
-        y = randint(50, 1000-50)
-        cercle(x, y, 50, 'black', 'grey', 1, "obstacle")
-        lst_x[2].append(x)
-        lst_y[2].append(y)
+    if x != None and y != None :
+        cercle(x, y, r, couleur, remplissage, epaisseur, tag)
+    else :
+        x = randint(r, largeurFenetre-r)
+        y = randint(r, hauteurFenetre-r)
+        cercle(x, y, r, couleur, remplissage, epaisseur, tag)
+    lst_x[2].append(x)
+    lst_y[2].append(y)
     return
 
 def terminaison(tour,i):
@@ -702,23 +738,9 @@ def dynamique(lst_x, lst_y, lst_rayon, tag_j1, tag_j2) :
 
 #-----Bonus-----
 
-def bonus_obstacles():
-    cercle(hauteurFenetre/2, largeurFenetre/2, 50, 'black', 'grey', 1, "obstacle")
-    cercle(hauteurFenetre/3, largeurFenetre/3, 50, 'black', 'grey', 1, "obstacle")
-    cercle(hauteurFenetre/4, largeurFenetre/4, 50, 'black', 'grey', 1, "obstacle")
-    cercle(hauteurFenetre/3+320, largeurFenetre/3, 50, 'black', 'grey', 1, "obstacle")
-    cercle(hauteurFenetre/3+400, largeurFenetre/4, 50, 'black', 'grey', 1, "obstacle")
-    lst_x[2].append(hauteurFenetre/2)
-    lst_y[2].append(largeurFenetre/2)
-    lst_x[2].append(hauteurFenetre/3)
-    lst_y[2].append(largeurFenetre/3)
-    lst_x[2].append(hauteurFenetre/4)
-    lst_y[2].append(largeurFenetre/4)
-    lst_x[2].append(hauteurFenetre/3+320)
-    lst_y[2].append(largeurFenetre/3)    
-    lst_x[2].append(hauteurFenetre/3+400)
-    lst_y[2].append(largeurFenetre/4)
-    return
+def bonus_obstacles(fichier):
+    with open(fichier) as f:
+        return f.read().split()
     
 def menu_bonus(bonus, rayon, tour):
     cree_fenetre(largeurFenetre, hauteurFenetre)
@@ -729,14 +751,14 @@ def menu_bonus(bonus, rayon, tour):
     y_superieur = 200
     y_inferieur = y_superieur*2
     x_temp = x_droite+x_gauche
-    
+
 # Boutons options
-    rectangle(x_gauche, y_superieur, x_droite, y_inferieur, 'red', 'red', 1, 'arene1')
-    rectangle(x_temp, y_inferieur, x_droite*2, y_superieur, 'red', 'red', 1, 'bonus2')
-    rectangle(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'red', 'red', 1, 'arene2')
-    rectangle(x_temp, y_inferieur+10, x_droite*2, y_superieur*3, 'red', 'red', 1, 'bonus2')
-    rectangle(x_gauche, y_superieur*3+10, x_droite, y_superieur*4, 'red', 'red', 1, 'arene3')
-    rectangle(x_temp, y_superieur*3+10, x_droite*2, y_superieur*4, 'red', 'red', 1, 'bonus2')
+    rectangle(x_gauche, y_superieur, x_droite, y_inferieur, str('red' if bonus['arene1'] == False else 'green'), str('red' if bonus['arene1'] == False else 'green'), 1, 'arene1')
+    rectangle(x_temp, y_inferieur, x_droite*2, y_superieur, str('red' if bonus['parametres'] == False else 'green'), str('red' if bonus['parametres'] == False else 'green'), 1, 'parametres')
+    rectangle(x_gauche, y_inferieur+10, x_droite, y_superieur*3, str('red' if bonus['arene2'] == False else 'green'), str('red' if bonus['arene2'] == False else 'green'), 1, 'arene2')
+    rectangle(x_temp, y_inferieur+10, x_droite*2, y_superieur*3, str('red' if bonus['bonus2'] == False else 'green'), str('red' if bonus['bonus2'] == False else 'green'), 1, 'bonus2')
+    rectangle(x_gauche, y_superieur*3+10, x_droite, y_superieur*4, str('red' if bonus['arene3'] == False else 'green'), str('red' if bonus['arene3'] == False else 'green'), 1, 'arene3')
+    rectangle(x_temp, y_superieur*3+10, x_droite*2, y_superieur*4, str('red' if bonus['bonus2'] == False else 'green'), str('red' if bonus['bonus2'] == False else 'green'), 1, 'bonus2')
     
     
     # Element de design
@@ -746,7 +768,7 @@ def menu_bonus(bonus, rayon, tour):
     
     # Textes options
     menu_textuel(x_gauche, y_superieur, x_droite, y_inferieur, 'Arene 1')
-    menu_textuel(x_temp, y_inferieur, x_droite*2, y_superieur, 'Bonus2')
+    menu_textuel(x_temp, y_inferieur, x_droite*2, y_superieur, 'Paramètres')
     menu_textuel(x_gauche, y_inferieur+10, x_droite, y_superieur*3, 'Arene 2')
     menu_textuel(x_temp, y_inferieur+10, x_droite*2, y_superieur*3, 'Bonus2')
     menu_textuel(x_gauche, y_superieur*3+10, x_droite, y_superieur*4, 'Arene 3')
@@ -772,14 +794,14 @@ def menu_bonus(bonus, rayon, tour):
                 mise_a_jour()
             
             if x >= x_temp and x <= x_droite*2 and y >= y_superieur and y <= y_inferieur :
-                efface('bonus2')
+                efface('parametres')
                 mise_a_jour()
-                bonus['bonus2'] = not bonus['bonus2']
-                if bonus['bonus2'] == True :
-                    rectangle(x_temp, y_inferieur, x_droite*2, y_superieur, 'green', 'green', 1, 'bonus2')
+                bonus['parametres'] = not bonus['parametres']
+                if bonus['parametres'] == True :
+                    rectangle(x_temp, y_inferieur, x_droite*2, y_superieur, 'green', 'green', 1, 'parametres')
                 else :
-                    rectangle(x_temp, y_inferieur, x_droite*2, y_superieur, 'red', 'red', 1, 'bonus2')
-                menu_textuel(x_temp, y_inferieur, x_droite*2, y_superieur, 'Bonus2')
+                    rectangle(x_temp, y_inferieur, x_droite*2, y_superieur, 'red', 'red', 1, 'parametres')
+                menu_textuel(x_temp, y_inferieur, x_droite*2, y_superieur, 'Paramètres')
                 mise_a_jour()
 
             if x >= x_gauche and x <= x_droite and y >= y_inferieur+10 and y <= y_superieur*3 :
@@ -827,12 +849,63 @@ def menu_bonus(bonus, rayon, tour):
                 mise_a_jour()
         else :
             ferme_fenetre()
+            if bonus['parametres'] == True :
+                parametres()
             Jeu(rayon, tour)
 
-
+def parametres(mode: str='lecture') :
+    if mode == 'lecture' :
+        with open(os.path.join('data', 'config.txt')) as file :
+            line = file.read().split()
+            print(line)
+            global joueur1, joueur2, tour, rayon, largeurFenetre, hauteurFenetre, budget, variante, bonus, lst_rayon 
+            joueur1, joueur2 = line[1], line[2]
+            lst_rayon = []
+            lst_rayon = {joueur1 : [], joueur2 : []}
+            if line[3] == 'tour' :
+                tour = line[4]
+            if line[5] == 'rayon' :
+                rayon[joueur1] = int(line[6])
+                rayon[joueur2] = int(line[7])
+                rayon['obstacle'] = int(line[8])
+            if line[9] == 'fenetre' :
+                largeurFenetre = int(line[10])
+                hauteurFenetre = int(line[11])
+            if line[12] == 'budget' :
+                budget[joueur1] = int(line[13])
+                budget[joueur2] = int(line[14])
+            """
+            if line[15] == 'variante' :
+                variante['taille_des_boules'] = line[16]
+                variante['obstacles'] = line[17]
+                variante['terminaison'] = line[18]
+                variante['score'] = line[19]
+                variante['dynamique'] = line[20]
+                variante['sablier'] = line[21]
+            if line[22] == 'bonus' :
+                bonus['arene1'] = line[23]
+                bonus['arene2'] = line[24]
+                bonus['arene3'] = line[25]
+                bonus['bonus2'] = line[26]
+                bonus['parametres'] = line[27]"""
+    elif mode == 'sauvegarde' :
+        with open(os.path.join('data', 'config.txt'), 'w') as file :
+            file.write('joueur '+joueur1+' '+joueur2)
+            file.write('\n')
+            file.write('tour '+str(tour))
+            file.write('\n')
+            file.write('rayon '+' '.join(rayon.values()))
+            file.write('\n')
+            file.write('fenetre '+str(largeurFenetre)+' '+str(hauteurFenetre))
+            file.write('\n')
+            file.write('variante '+' '.join(variante.values()))
+            file.write('\n')
+            file.write('bonus '+' '.join(bonus.values()))
+    return
 #-----Main-----
 
 if __name__ == '__main__':
+    global joueur1, joueur2, lst_x, lst_y, tour, rayon, largeurFenetre, hauteurFenetre, budget, lst_rayon, variante, bonus
     joueur1 = j1() # Variables qu'on a besoin de généralisé dans le code
     joueur2 = j2()
     lst_x = [[], [], []]
@@ -845,5 +918,5 @@ if __name__ == '__main__':
     #coordonnees = dict()
     lst_rayon = {joueur1 : [], joueur2 : []}
     variante = {'taille_des_boules' : False, 'obstacles' : False, 'terminaison' : False, 'score' : False, 'dynamique' : False, 'sablier' : False}
-    bonus = {'arene1' : False, 'arene2' : False, 'arene3' : False, 'bonus2' : False}
+    bonus = {'arene1' : False, 'arene2' : False, 'arene3' : False, 'bonus2' : False, 'parametres' : False}
     start(tour)
