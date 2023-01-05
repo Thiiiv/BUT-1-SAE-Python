@@ -1,0 +1,8 @@
+joueur blue red
+tour 15
+rayon 50 50 50
+fenetre 1000 1000
+budget 500 500
+variante False False False False False False
+bonus False False False False False
+
