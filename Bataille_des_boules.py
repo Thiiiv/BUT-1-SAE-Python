@@ -314,7 +314,10 @@ def Jeu(rayon, tour):
         menu_textuel(75, 15, 75, 15, 'Tour: J1', 'j1', joueur1)  
         efface('j2')
         efface('tour')
-        menu_textuel(largeurFenetre//2, 15, largeurFenetre//2, 15, 'Nombre de tours restants : '+str(tour-i-1), 'tour', joueur1)
+        menu_textuel(largeurFenetre//2, 15, largeurFenetre//2, 15, 'Tours restants : '+str(tour-i-1), 'tour', joueur1)
+        if variante['taille_des_boules'] == True :
+            efface('budget_j2')
+            menu_textuel(largeurFenetre-130, 15, largeurFenetre-100, 15, 'Budget : '+str(budget[joueur1]), 'budget_j1', joueur1)
         if variante['terminaison'] == True or variante['score'] == True or variante['sablier'] == True :
             if variante['sablier'] == True :
                 evenement = sablier(5, joueur1)
@@ -341,9 +344,6 @@ def Jeu(rayon, tour):
         
         if 'Clic' in evenement[2] :
             x1, y1, z1 = evenement
-            if variante['taille_des_boules'] == True :
-                efface('budget_j2')
-                menu_textuel(largeurFenetre-100, 15, largeurFenetre-100, 15, 'Budget : '+str(budget[joueur1]), 'budget_j1', joueur1)
             mise_a_jour()
             #variante obstacles
             #print("DistanceO :", distanceO)
@@ -423,7 +423,10 @@ def Jeu(rayon, tour):
         menu_textuel(75, 15, 75, 15, 'Tour: J2', 'j2', joueur2)
         efface('j1')
         efface('tour')
-        menu_textuel(largeurFenetre//2, 15, largeurFenetre//2, 15, 'Nombre de tours restants : '+str(tour-i-1), 'tour', joueur2)
+        menu_textuel(largeurFenetre//2, 15, largeurFenetre//2, 15, 'Tours restants : '+str(tour-i-1), 'tour', joueur2)
+        if variante['taille_des_boules'] == True :
+            efface('budget_j1')
+            menu_textuel(largeurFenetre-130, 15, largeurFenetre-100, 15, "Budget : "+str(budget[joueur2]), 'budget_j2', joueur2)
         if variante['terminaison'] == True or variante['score'] == True or variante['sablier'] == True :
             if variante['sablier'] == True :
                 efface('temps')
@@ -450,9 +453,6 @@ def Jeu(rayon, tour):
         if 'Clic' in evenement[2] :
             #print("je suis dans la boucle du j2")
             x2, y2, z2 = evenement
-            if variante['taille_des_boules'] == True :
-                efface('budget_j1')
-                menu_textuel(largeurFenetre-100, 15, largeurFenetre-100, 15, "Budget : "+str(budget[joueur2]), 'budget_j2', joueur2)
             mise_a_jour()
              #variante obstacles
             #print("distance2 :", distance2)
