@@ -632,7 +632,7 @@ def sablier(secondes, joueur):
     while time()<t1 or typeEv != "Touche" or "Clic" not in typeEv :
         ev=donne_evenement()
         typeEv=type_evenement(ev)
-        menu_textuel(largeurFenetre/2, 90, largeurFenetre/2, 15, str(t1-time()), 'temps', joueur)
+        menu_textuel(largeurFenetre/2, 90, largeurFenetre/2, 15, str(round(t1-time())), 'temps', joueur)
         if time()>= t1 :
             return ('', '', 'Touche')
         if "Clic" in typeEv:
