@@ -1,6 +1,7 @@
 #-----Imports-----
 import string
 import os
+import sys
 from upemtk import *
 from random import randint
 from time import sleep, time, perf_counter
@@ -681,13 +682,19 @@ def taille_des_boules(joueur) :
     rayon = ''
     while True :
         touche = attente_touche()
+        if sys.platform == "linux" :
+            touche = touche[3:]
+        print(touche)
         if touche in string.digits :
             rayon += touche
+            print(rayon)
         else :
             if len(rayon) > 0 :
                 rayon = int(rayon)
+                print(rayon)
             else :
                 rayon = budget[joueur]+10
+                print(rayon)
             break
     if budget[joueur]-rayon >= 0 :
         budget[joueur] = budget[joueur]-rayon
